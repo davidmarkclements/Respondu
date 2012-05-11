@@ -10,7 +10,6 @@
     var self = this, 
     defaults = {
     escapeMethod: 'script', //specifiy escape method, 'script' or 'comment'. 
-    classes: false, //string for single class or array of classes (TODO -> OR object containing breakpoints)
     escaper: false, //specify alternative escape code, string or regex. Will override escapeMethod if set.
     breakpoints: { //
         typical: 500,
@@ -107,37 +106,38 @@
   
     _w['#R'].prototype.picture = function (doc, done) {
       var pictures = (doc.getElementsByTagName('picture')), pic, imgAlt, sources, src, i, c,
-        media, minWidth, imgSrc, img,  sW = _w.screen.width, pr = _w.devicePixelRatio, pixelRatio;
-        
-      pr = pr || 1;
+        media, minWidth, imgSrc, img,  sW = _w.screen.width, , pixelRatio, 
+        pr = _w.devicePixelRatio;
+                
+      pr = pr || 1; //set devices pixel ratio;
+      
       for(i = 0; i < pictures.length; i++) {
         pic = pictures[i];
         imgAlt = pic.getAttribute('alt');
         sources = pic.getElementsByTagName('source');
           for(c = 0; c < sources.length; c++) {
             src = sources[c];
-            media = src.getAttribute('media');
+            media = src.getAttribute('media'); //grab the alt
            
             if (media) {
               minWidth = media.match(/min-width:([0-9]+)px/);
-              minWidth = minWidth ? minWidth[1] : 0;
+              minWidth = minWidth ? minWidth[1] : 0; //get min-width media query for each source element
               
-              pixelRatio = media.match(/min-device-pixel-ratio:([0-9]+)/);
-              pixelRatio = pixelRatio ? pixelRatio[1] : 1;
+              pixelRatio = media.match(/min-device-pixel-ratio:([0-9]+)/); //get min-device-pixel-ratio
+              pixelRatio = pixelRatio ? pixelRatio[1] : 1; 
                             
-              if (minWidth < sW && pr === pixelRatio) {imgSrc = src };
+              if (minWidth < sW && pr === pixelRatio) { imgSrc = src; } //set imgSrc to the source element if conditions match
             }
           }
-        img = doc.createElement('img');
-        img.src = imgSrc.getAttribute('src');
-        img.alt = imgAlt;
+        img = doc.createElement('img'); //create a new image element on the ghost DOM
+        img.src = imgSrc.getAttribute('src'); //set chosen src
+        img.alt = imgAlt; //set alt
         
-        console.log(img);
-        pic.parentNode.replaceChild(img, pic);       
+        pic.parentNode.replaceChild(img, pic); //replace picture element with create img element
       }
       
       
-      done();
+      done(); //finished.
     }
 
 
