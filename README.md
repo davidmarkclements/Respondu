@@ -38,7 +38,7 @@ How To Use
 
 ```
 
-*Don't put closing </script> tags inside <noscript> tags! This will ruin EVERYTHING*
+*Don't put closing &lt;script&gt; tags inside &lt;noscript&gt; tags! This will ruin EVERYTHING*
 
 Instead use a self closing syntax  (*TODO*)
 
@@ -46,7 +46,7 @@ Instead use a self closing syntax  (*TODO*)
 <script src=path_to_my_script />
 ```
 
-This isn't supported in browsers, but Respondu supports (*TODO*) it to sidestep the whole </script> in <noscript> issue
+This isn't supported in browsers, but Respondu supports (*TODO*) it to sidestep the whole &lt;/script&gt; in &lt;noscript&gt; issue
 
 How It Works
 ===
