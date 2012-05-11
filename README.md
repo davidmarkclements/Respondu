@@ -191,17 +191,29 @@ Browsers Confirmed as Working
 * Firefox
 * iOS Safari
 
+Issues
+===
+* Only scripts in the head will work at present
+* If scripts are placed after the noscript tag, they will be executed before the content has loaded
+* The solution is to place scripts within the noscript tag, but `</script>` end tags break the functionality
+* Therefore scripts with src'es shall be included with `<script src='blah' />` INSIDE the `<noscript>` tags **TODO**
+* Inline scripts in the body, well, I haven't worked inline scripts out yet. 
+
+
 
 Todo
 ===
 
 * Support max-width for picture implementation
+* self closing script syntax
 * Tidy & optimize
 * create more implementations
 * testing in more browsers
 * working examples
 * explain how it works properly
 * rethink the name (suggestions?)
+
+
 
 Contributing
 ===
