@@ -1,4 +1,4 @@
-window.onload = function () {
-alert('hi');
-}
-
+$(document).ready(function() {  
+  console.log($('#e')[0].src);
+});  
+    
