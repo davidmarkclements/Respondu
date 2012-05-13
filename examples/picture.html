@@ -1,0 +1,32 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<style>img {width:100%} /* use fluid layouts :) */</style>
+<script src=js/R.js></script>
+</head>
+<body>
+
+<script>window['#R']('picture');</script>
+<noscript>
+<picture id=thepic alt="Alt tag describing the image represented"> 
+    <source src="images/photo.small.jpg"/> 
+    <source src="images/photo.small@2x.jpg" media="-webkit-min-device-pixel-ratio:2,-moz-min-device-pixel-ratio:2,-o-min-device-pixel-ratio: 2/1,min-device-pixel-ratio:2"/> 
+
+    <source src="images/photo.medium.jpg" media="min-width:321px"/> 
+    <source src="images/photo.medium@2x.jpg" media="min-width:321px and -webkit-min-device-pixel-ratio:2,-moz-min-device-pixel-ratio:2,-o-min-device-pixel-ratio: 2/1,min-device-pixel-ratio:2"/> 
+
+    <source src="images/photo.large.jpg" media="min-width:641px"/> 
+    <source src="images/photo.large@2x.jpg" media="min-width:641px and -webkit-min-device-pixel-ratio:2,-moz-min-device-pixel-ratio:2,-o-min-device-pixel-ratio: 2/1,min-device-pixel-ratio:2"/> 
+
+    <source src="images/photo.xlargel.jpg" media="min-width:1281px" /> 
+    <source src="images/photo.xlargel@2x.jpg" media="min-width:1281px and -webkit-min-device-pixel-ratio:2,-moz-min-device-pixel-ratio:2,-o-min-device-pixel-ratio: 2/1,min-device-pixel-ratio:2" /> 
+    <img src="images/photo.jpg" />
+</picture>
+
+
+</noscript></script>
+
+
+</body>
+</html>
+
