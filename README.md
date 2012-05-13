@@ -193,9 +193,9 @@ Browsers Confirmed as Working
 
 Issues
 ===
-* Only scripts in the head will work at present
+* doesn't work well with $(document).ready et. al., since dom is ready before we insert code
 * If scripts are placed after the noscript tag, they will be executed before the content has loaded
-* The solution is to place scripts within the noscript tag, but `</script>` end tags break the functionality
+* The current solution is to place scripts that parse DOM elements at the end of noscript tag, but `</script>` end tags break the functionality
 * Therefore scripts with src'es shall be included with `<script src='blah' />` INSIDE the `<noscript>` tags **TODO**
 * Inline scripts in the body, well, I haven't worked inline scripts out yet. 
 
@@ -204,13 +204,14 @@ Issues
 Todo
 ===
 
-* Support max-width for picture implementation
+* implement faux document ready event
 * self closing script syntax
 * Tidy & optimize
 * create more implementations
 * testing in more browsers
 * working examples
 * explain how it works properly
+* explain the callback functionality
 * rethink the name (suggestions?)
 
 

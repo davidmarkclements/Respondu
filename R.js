@@ -1,20 +1,37 @@
 (function (_w) {
-  var doc = document.implementation ? document.implementation.createHTMLDocument('R') : new ActiveXObject("htmlfile"),
+
+  function iedoc() {
+    var root, iedom = new ActiveXObject("htmlfile");
+    iedom.appendChild(iedom.createElement('html'));
+    root = iedom.getElementsByTagName('html')[0];
+    root.appendChild(iedom.createElement('head'));
+    root.appendChild(iedom.createElement('body'));
+    iedom.open(); //doesn't seem to work without this. hackarrific
+    iedom.close();  
+    return iedom;
+  }
+  
+  function i(){if(d){return}d=true;if(document.addEventListener&&!c.opera){document.addEventListener("DOMContentLoaded",g,false)}if(c.msie&&window==top)(function(){if(e)return;try{document.documentElement.doScroll("left")}catch(a){setTimeout(arguments.callee,0);return}g()})();if(c.opera){document.addEventListener("DOMContentLoaded",function(){if(e)return;for(var a=0;a<document.styleSheets.length;a++)if(document.styleSheets[a].disabled){setTimeout(arguments.callee,0);return}g()},false)}if(c.safari){var a;(function(){if(e)return;if(document.readyState!="loaded"&&document.readyState!="complete"){setTimeout(arguments.callee,0);return}if(a===undefined){var b=document.getElementsByTagName("link");for(var c=0;c<b.length;c++){if(b[c].getAttribute("rel")=="stylesheet"){a++}}var d=document.getElementsByTagName("style");a+=d.length}if(document.styleSheets.length!=a){setTimeout(arguments.callee,0);return}g()})()}h(g)}function h(a){var b=window.onload;if(typeof window.onload!="function"){window.onload=a}else{window.onload=function(){if(b){b()}a()}}}function g(){if(!e){e=true;if(f){for(var a=0;a<f.length;a++){f[a].call(window,[])}f=[]}}}var a=window.DomReady={};var b=navigator.userAgent.toLowerCase();var c={version:(b.match(/.+(?:rv|it|ra|ie)[\/: ]([\d.]+)/)||[])[1],safari:/webkit/.test(b),opera:/opera/.test(b),msie:/msie/.test(b)&&!/opera/.test(b),mozilla:/mozilla/.test(b)&&!/(compatible|webkit)/.test(b)};var d=false;var e=false;var f=[];a.ready=function(a,b){i();if(e){a.call(window,[])}else{f.push(function(){return a.call(window,[])})}};i()
+
+
+
+  var doc = document.implementation.createHTMLDocument ? document.implementation.createHTMLDocument('R') : iedoc(),
     escapeMethods, _d = _w.document, DOMReady;
 
-  function i(){if(d){return}d=true;if(document.addEventListener&&!c.opera){document.addEventListener("DOMContentLoaded",g,false)}if(c.msie&&window==top)(function(){if(e)return;try{document.documentElement.doScroll("left")}catch(a){setTimeout(arguments.callee,0);return}g()})();if(c.opera){document.addEventListener("DOMContentLoaded",function(){if(e)return;for(var a=0;a<document.styleSheets.length;a++)if(document.styleSheets[a].disabled){setTimeout(arguments.callee,0);return}g()},false)}if(c.safari){var a;(function(){if(e)return;if(document.readyState!="loaded"&&document.readyState!="complete"){setTimeout(arguments.callee,0);return}if(a===undefined){var b=document.getElementsByTagName("link");for(var c=0;c<b.length;c++){if(b[c].getAttribute("rel")=="stylesheet"){a++}}var d=document.getElementsByTagName("style");a+=d.length}if(document.styleSheets.length!=a){setTimeout(arguments.callee,0);return}g()})()}h(g)}function h(a){var b=window.onload;if(typeof window.onload!="function"){window.onload=a}else{window.onload=function(){if(b){b()}a()}}}function g(){if(!e){e=true;if(f){for(var a=0;a<f.length;a++){f[a].call(window,[])}f=[]}}}var a=window.DomReady={};var b=navigator.userAgent.toLowerCase();var c={version:(b.match(/.+(?:rv|it|ra|ie)[\/: ]([\d.]+)/)||[])[1],safari:/webkit/.test(b),opera:/opera/.test(b),msie:/msie/.test(b)&&!/opera/.test(b),mozilla:/mozilla/.test(b)&&!/(compatible|webkit)/.test(b)};var d=false;var e=false;var f=[];a.ready=function(a,b){i();if(e){a.call(window,[])}else{f.push(function(){return a.call(window,[])})}};i()
-  DOMReady = _w.jQuery(document).ready || _w.DomReady.ready;
-  
   _w['#R'] = function (implementation, opts, cb) {
     if (!(this instanceof _w['#R'])) {return new _w['#R'](implementation, opts, cb);}
     var self = this, 
     defaults = {
     escapeMethod: 'script', //specifiy escape method, 'script' or 'comment'. 
     escaper: false, //specify alternative escape code, string or regex. Will override escapeMethod if set.
+    hires: true,
+    hiresSuffix: '@2x', 
     breakpoints: { //
-        typical: 500,
-        medium : 1000, //configurable properties, will be reflected in requested image e.g. name.medium.png
-        large : Infinity //largest size set to infinity
+        typical: 640,
+        small: 320,  
+        medium: 640, //configurable properties, will be reflected in requested image e.g. name.medium.png       
+        large: 1280,
+        xlarge: Infinity  //largest size set to infinity
       }
     }
     
@@ -36,12 +53,16 @@
       };
       
       opts.escaper = escapeMethods[opts.escapeMethod];
+      
+      
+      
     }
     
     DOMReady(function() {
       var _b = _d.getElementsByTagName('body')[0]
       function extract(_h) {
-        doc.body.innerHTML = _h.replace(/<\/?noscript(.+)?>/g, '').replace(opts.escaper, '');
+        var x = /<script type=["']?responsive\/html["']?>/i;
+        doc.body.innerHTML = _h.replace(/<\/?noscript(.+)?>/g, '').replace(x, '');
       }
       
       
@@ -62,7 +83,7 @@
         self.implement(doc, true);
       }
 
-      extract(_b.innerHTML.toString());
+      extract(_b.innerHTML);
       selectImp();
         
     });
@@ -79,10 +100,12 @@
           _b = _d.getElementsByTagName('body')[0]
         function respond(scrWth) {
           var size = '', key, i;
+          if (scrWth <= opts.breakpoints.typical) return;
+          delete opts.breakpoints.typical;
           for (key in opts.breakpoints) {
-            if (opts.breakpoints.hasOwnProperty(key)) {
+            if (opts.breakpoints.hasOwnProperty(key)) {            
               if (scrWth <= opts.breakpoints[key]) {
-                size = (key == 'typical') ? '' : key + '.';           
+                size = key + '.';           
                 break;
               }
             }
@@ -99,21 +122,23 @@
           cb(res ? respond(_w.screen.width) : doc);
         } else {         
         _b.innerHTML = res ? respond(_w.screen.width).body.innerHTML : doc.body.innerHTML; 
-        }        
+        }
+        
+        /*if (_w.jQuery)*/ console.log('TODO: implement faux document ready event');       
      
      }
     
   
     _w['#R'].prototype.picture = function (doc, done) {
-      var pictures = (doc.getElementsByTagName('picture')), pic, imgAlt, sources, src, i, c,
-        media, minWidth, imgSrc, img,  sW = _w.screen.width, , pixelRatio, 
+      var pictures = (doc.getElementsByTagName('picture')), pic, attrs, sources, src, i, c,
+        media, minWidth, imgSrc, img, sW = _w.screen.width,  pixelRatio, 
         pr = _w.devicePixelRatio;
                 
       pr = pr || 1; //set devices pixel ratio;
       
       for(i = 0; i < pictures.length; i++) {
         pic = pictures[i];
-        imgAlt = pic.getAttribute('alt');
+        attrs = pic.attributes;
         sources = pic.getElementsByTagName('source');
           for(c = 0; c < sources.length; c++) {
             src = sources[c];
@@ -130,8 +155,13 @@
             }
           }
         img = doc.createElement('img'); //create a new image element on the ghost DOM
-        img.src = imgSrc.getAttribute('src'); //set chosen src
-        img.alt = imgAlt; //set alt
+
+        img.setAttribute('src', imgSrc.getAttribute('src'));
+                
+        for(c = 0; c < attrs.length; c++) {
+        img.setAttribute(attrs[c].nodeName, attrs[c].nodeValue);        
+        }
+
         
         pic.parentNode.replaceChild(img, pic); //replace picture element with create img element
       }
