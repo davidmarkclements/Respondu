@@ -190,14 +190,14 @@ On some browsers its possible to extract and process the content of the `<noscri
 Other browsers (IE, Safari) however, actually remove the content of the noscript tags as soon as the Javascript engine initializes. 
 So Respondu uses a hack to to ensure the content can be extracted from all browsers.
 
-We do this by dynamically wrapping the <noscript> tags in another context - there are several ways: comments, textareas, script tags, style tags...
+We do this by dynamically wrapping the `<noscript>` tags in another context - there are several ways: comments, textareas, script tags, style tags...
 
-After experimentation and thought, Respondu's chosen way is to wrap the <noscript> tags with <style> tags, this seems to be the least invasive.
+After experimentation and thought, Respondu's chosen way is to wrap the `<noscript>` tags with `<style>` tags, this seems to be the least invasive.
 
 So once the script on the page has executed we end up with `<style type="text/responsive"><noscript>#content#</noscript></style>`, this prevents the content in the
 noscript tags from being removed, and allows us to extract the contents from the noscript tags. 
 
-As a result, any inline styles in the body (..which are really unneccessary and sub-optimal) should be included with <css> tags instead of <style>
+As a result, any inline styles in the body (..which are really unneccessary and sub-optimal) should be included with `<css>` tags instead of `<style>`
 tags, e.g.
 
 ```
@@ -236,7 +236,7 @@ content etc.
 ```
 
 TODO: $(document).ready (and variants) naturally triggers before we process and push out content, Respondu will manually re-trigger
-      these calls. Alternatively, just place your scripts before the closing </noscript> tag and remove the $(document).ready
+      these calls. Alternatively, just place your scripts before the closing `</noscript>` tag and remove the $(document).ready
 
 
 Browsers Confirmed as Working
