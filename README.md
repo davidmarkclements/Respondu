@@ -32,13 +32,18 @@ Basic Use
 
 <img src="/images/responsive.jpg">
 
-</noscript>
+</noscript></style>
 </body>
 </html>
 
 ```
 
-This will apply the default breakpoints
+The end tags `</noscript></style>` are essential for Respondu to operate in certain browsers (Safari, IE8)
+and to block the img src's from loading prior to responsive processing. 
+
+The positioning of the window['#R'] call in the body, just before the noscript tag is also essential. See How It Works. 
+
+Basic usage will apply the default breakpoints
 
 ```javascript
 breakpoints: {
@@ -92,7 +97,7 @@ To use do something like
     <source src="photo-xl@2x.jpg" media="min-width:1281px and -webkit-min-device-pixel-ratio:2,-moz-min-device-pixel-ratio:2,-o-min-device-pixel-ratio: 2/1,min-device-pixel-ratio:2" /> 
     <img src="photo-s.jpg" />
 </picture>
-</noscript>
+</noscript></style>
 </body>
 </html>
 
@@ -179,8 +184,59 @@ This isn't supported in browsers, but Respondu supports (*TODO*) it to sidestep 
 
 How It Works
 ===
+Wrapping content in `<noscript>` tags stops it from being added to the DOM, whilst also providing complete content to non-js clients (such as
+search engine bots, screen readers, text browsers). 
+On some browsers its possible to extract and process the content of the `<noscript>` tags using normal methods (e.g. getElementById etc.) 
+Other browsers (IE, Safari) however, actually remove the content of the noscript tags as soon as the Javascript engine initializes. 
+So Respondu uses a hack to to ensure the content can be extracted from all browsers.
 
-Look at teh codez :D
+We do this by dynamically wrapping the <noscript> tags in another context - there are several ways: comments, textareas, script tags, style tags...
+
+After experimentation and thought, Respondu's chosen way is to wrap the <noscript> tags with <style> tags, this seems to be the least invasive.
+
+So once the script on the page has executed we end up with `<style type="text/responsive"><noscript>#content#</noscript></style>`, this prevents the content in the
+noscript tags from being removed, and allows us to extract the contents from the noscript tags. 
+
+As a result, any inline styles in the body (..which are really unneccessary and sub-optimal) should be included with <css> tags instead of <style>
+tags, e.g.
+
+```
+<script>window['#R']();</script>
+<noscript>
+content etc.
+<css>
+  #silly {color:blue}
+</css>
+</noscript></style>
+```
+
+Respondu will parse the css tags, and convert them to style tags. 
+It's really just best to avoid inline styles if you can.
+
+Once the noscript content has been extracted, Respondu loads it into a "ghost DOM". (see [createHTMLDocument](https://developer.mozilla.org/en/DOM/DOMImplementation.createHTMLDocument))
+The ghost DOM doesn't load any src's. We can manipulate this ghost DOM as the `doc` parameter when creating implementations (see [Creating an Implementation](#creating-an-implementation))
+
+Once all changes have been made to our ghost document (e.g. when we've replaced img src's according to screen width), we load it into the real document
+
+Inline Scripts
+===
+If we want to have scripts execute once the DOM has loaded, the best place for them (if possible) is usually just before the closing `</body>` tag.
+If you're using Respondu, you want them to be just before the closing `</noscript></style>` tags, Respondu will then ensure they are loaded and executed
+after all the content has loaded. 
+
+```
+<body>
+<script>window['#R']();</script>
+<noscript>
+content etc.
+
+<script src=myScriptWhichWillManipulateTheDocument.js></script>
+</noscript></style>
+</body>
+```
+
+TODO: $(document).ready (and variants) naturally triggers before we process and push out content, Respondu will manually re-trigger
+      these calls. Alternatively, just place your scripts before the closing </noscript> tag and remove the $(document).ready
 
 
 Browsers Confirmed as Working
@@ -210,7 +266,6 @@ Todo
 * create more implementations
 * testing in more browsers
 * working examples
-* explain how it works properly
 * explain the callback functionality
 * rethink the name (suggestions?)
 
