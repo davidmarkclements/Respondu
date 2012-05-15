@@ -9,7 +9,14 @@
 
 <script>window['#R']();</script>
 <noscript>
+
 <img src="/images/photo.jpg">
+
+<!-- notice how the scripts execute in the correct order -->
+<script src=js/test.js></script>
+<script>console.log('inline', document.getElementsByTagName('img'))</script>
+<script src=js/test2.js></script>
+
 </noscript></style>
 
 

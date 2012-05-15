@@ -13,8 +13,8 @@
   
   function i(){if(d){return}d=true;if(document.addEventListener&&!c.opera){document.addEventListener("DOMContentLoaded",g,false)}if(c.msie&&window==top)(function(){if(e)return;try{document.documentElement.doScroll("left")}catch(a){setTimeout(arguments.callee,0);return}g()})();if(c.opera){document.addEventListener("DOMContentLoaded",function(){if(e)return;for(var a=0;a<document.styleSheets.length;a++)if(document.styleSheets[a].disabled){setTimeout(arguments.callee,0);return}g()},false)}if(c.safari){var a;(function(){if(e)return;if(document.readyState!="loaded"&&document.readyState!="complete"){setTimeout(arguments.callee,0);return}if(a===undefined){var b=document.getElementsByTagName("link");for(var c=0;c<b.length;c++){if(b[c].getAttribute("rel")=="stylesheet"){a++}}var d=document.getElementsByTagName("style");a+=d.length}if(document.styleSheets.length!=a){setTimeout(arguments.callee,0);return}g()})()}h(g)}function h(a){var b=window.onload;if(typeof window.onload!="function"){window.onload=a}else{window.onload=function(){if(b){b()}a()}}}function g(){if(!e){e=true;if(f){for(var a=0;a<f.length;a++){f[a].call(window,[])}f=[]}}}var a=window.DomReady={};var b=navigator.userAgent.toLowerCase();var c={version:(b.match(/.+(?:rv|it|ra|ie)[\/: ]([\d.]+)/)||[])[1],safari:/webkit/.test(b),opera:/opera/.test(b),msie:/msie/.test(b)&&!/opera/.test(b),mozilla:/mozilla/.test(b)&&!/(compatible|webkit)/.test(b)};var d=false;var e=false;var f=[];a.ready=function(a,b){i();if(e){a.call(window,[])}else{f.push(function(){return a.call(window,[])})}};i()
   
-  function domlooper(collection, cb, done) {
-    var el;
+  function domLooper(collection, cb, done) {
+    var el, i;
     for(i = 0; i < collection.length; i++) {
       el = collection[i];
       cb(el);
@@ -22,7 +22,17 @@
     if (done) done();
   }
   
-  var doc = document.implementation.createHTMLDocument ? document.implementation.createHTMLDocument('R') : iedoc(),
+  function domNexter(collection, cb) {
+    if (!collection) return;
+    if (!(collection instanceof Array)) {      
+      collection = [].slice.call(collection);
+    }
+    cb(collection.shift(), function () {
+      domNexter(collection, cb);
+    });
+  }
+  
+  var doc = document.implementation.createHTMLDocument ? document.implementation.createHTMLDocument('') : iedoc(),
     escapeMethods, _d = _w.document, DOMReady, mapTag;
     
   DOMReady = _w.DomReady.ready;  
@@ -57,8 +67,8 @@
 
     if (!opts.escaper) {
       opts.escaper = { //s for string, r for regex
-        script: '<script type="responsive/html">', //endtag </noscript></script>
-        style: {s: '<style type=responsive/html>', r: /<style type=["\']?responsive\/html[\'"]?>/i}, //endtag </noscript></style>
+        script: '<script id=respondu type=responsive/html>', //endtag </noscript></script>
+        style: '<style id=respondu type=responsive/html>', //endtag </noscript></style>
         '<!--' : '<!--'
       }[opts.escapeMethod];
       
@@ -73,12 +83,12 @@
     
     DOMReady(function() {
       var _b = _d.getElementsByTagName('body')[0]
-      function extract(_h) {
-        doc.body.innerHTML = _h.replace(/<\/?noscript(.+)?>/g, '').replace(opts.escaper.r || opts.escaper, '')
+      function extract(_h) {          
+        doc.body.innerHTML = _h.replace(/<\/?noscript(.+)?>/g, '');
       }
       
       
-      extract(_b.innerHTML);
+      extract(_d.getElementById('respondu').innerHTML);
       
       function selectImp() {
         if (implementation) {
@@ -103,7 +113,7 @@
 
 
 
-    document.write(opts.escaper.s || opts.escaper);
+    document.write(opts.escaper);
 
     
   }
@@ -124,7 +134,7 @@
             }
           }
           
-          domlooper(doc.images, function (im) {
+          domLooper(doc.images, function (im) {
             im.setAttribute('src', im.getAttribute('src').replace(/(.+)\.(.+)$/, '$1.' + size + '$2'));
           });
           
@@ -135,21 +145,30 @@
           cb(res ? respond(_w.screen.width) : doc);
         } else {         
           _b.innerHTML = res ? respond(_w.screen.width).body.innerHTML : doc.body.innerHTML;  
-          domlooper(doc.getElementsByTagName('script'), function(scr) {
-             var el = _d.createElement('script');             
-             domlooper(scr.attributes, function (attr) {  
-              if (attr) el.setAttribute(attr.nodeName, attr.nodeValue);
-             }, function () {
-              
-               if (el.src) _b.appendChild(el); 
-             });
-             
-            
-             
+          domNexter(doc.getElementsByTagName('script'), function(scr, next) {
+            if (!scr) return;
+            var el = _d.createElement('script');
+
+            if (scr.attributes && scr.attributes.length) { 
+             domLooper(scr.attributes, function (attr) {  
+                el.setAttribute(attr.nodeName, attr.nodeValue);
+
+               }, function () {                  
+                 _w['#R-script'] = function () {
+                  next();
+                 }
+                 el.setAttribute('onload', 'javascript:window["#R-script"]();');
+     
+                 if (el.src) _b.appendChild(el);
+               });
+              return;              
+            }            
+            if (scr.innerHTML) eval(scr.innerHTML);
+            next();                 
           });
         }
         
-        /*if (_w.jQuery)*/ console.log('TODO: implement faux document ready event');       
+        /*if (_w.jQuery)*/ //console.log('TODO: implement faux document ready event');       
      
      }
     
