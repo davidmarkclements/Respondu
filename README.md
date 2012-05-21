@@ -3,8 +3,6 @@ Respondu 0.0.1alpha
 
 A cross browser platform for implementing and creating gracefully degrading Responsive techniques
 
-
-
 Features
 ===
 
@@ -204,16 +202,10 @@ As an example, here's how we could implement picture (already included):
 
 ```
 
-
-
 We could then use it with
 ```html
 <script>window['#R']('MyNewImplementation');</script>
 ```
-
-
-
-
 
 *Don't put closing &lt;script&gt; tags inside &lt;noscript&gt; tags! This will ruin EVERYTHING*
 
@@ -292,7 +284,7 @@ Browsers Confirmed as Working
 
 Issues
 ===
-* doesn't work well with $(document).ready et. al., since dom is ready before we insert code
+* doesn't (yet) work well with $(document).ready et. al., since dom is ready before we insert code
 * If scripts are placed after the noscript tag, they will be executed before the content has loaded
 * The current solution is to place scripts that parse DOM elements at the end of noscript tag, but `</script>` end tags break the functionality
 * Therefore scripts with src'es shall be included with `<script src='blah' />` INSIDE the `<noscript>` tags **TODO**
@@ -304,9 +296,7 @@ Todo
 ===
 
 * implement faux document ready event
-* self closing script syntax
 * Tidy & optimize
-* create more implementations
 * testing in more browsers
 * working examples
 * explain the callback functionality
@@ -320,7 +310,5 @@ I warmly welcome all contributions, you can help by
 
 * testing
 * pull requests
+* issues
 * suggesting a name
-
-
-
