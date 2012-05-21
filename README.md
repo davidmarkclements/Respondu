@@ -1,7 +1,7 @@
 Respondu 0.0.1alpha
 ==
 
-A cross browser platform for implementing and creating Responsive techniques
+A cross browser platform for implementing and creating gracefully degrading Responsive techniques
 
 
 
@@ -12,9 +12,22 @@ Features
 * Entirely client side
 * **DEFERS SRC LOADING TILL PROCESSING IS FINISHED!**
 * Gracefully Degrades for non-JS clients (e.g. search bots)
-* Very gentle on the global scope
+* Very gentle to the global scope
 * Create your own responsive techniques (implementations)!
-* Forward looking - simple feature detection will cause it to become easily compatible with future browsers
+* Forward looking - simple feature detection (once we know how to detect) will cause it to become easily compatible with future browsers
+
+Inclusive Implementations 
+===
+
+* picture
+* srcset
+* pure javascript (breakpoints object)
+
+Examples
+===
+
+Examples can be found at [http://respondu.davidmarkclements.com](http://respondu.davidmarkclements.com)
+
 
 Basic Use
 ===
@@ -69,9 +82,9 @@ Break points can be set thusly
 Using Implementations
 ===
 Respondu also provides an implementations system,
-it currently has the picture implementation. 
+it currently includes the picture and srcset implementations. 
 
-To use do something like
+For picture we would do something like
 
 ```html
 <!DOCTYPE HTML>
@@ -100,7 +113,28 @@ To use do something like
 </noscript></style>
 </body>
 </html>
+```
 
+For srcset we could do
+
+```html
+<!DOCTYPE HTML>
+<html>
+<head>
+<style>img {width:100%} /* use fluid layouts :) */</style>
+<script src=js/R.js></script>
+</head>
+<body>
+
+<script>window['#R']('srcset');</script>
+<noscript>
+
+<img src="images/photo.jpg" srcset="images/photo.small.jpg 320w, images/photo.small@2x.jpg 320w 2x, images/photo.medium.jpg 640w, images/photo.medium@2x.jpg 640w 2x, images/photo.large.jpg 1280w, images/photo.large@2x.jpg 1280w 2x, images/photo.xlarge.jpg 20000w, images/photo.xlarge@2x.jpg 20000w x2">
+
+</noscript></style>
+
+</body>
+</html>
 ```
 
 Creating an Implementation
@@ -120,24 +154,25 @@ The `doc` parameter is a DOM object (but not the actual DOM)
 We `done` paremeter is called as a function when processing is complete 
 (using the `done` callback function allows for any async stuff)
 
-As an example, here's how we implement picture:
+As an example, here's how we could implement picture (already included):
 
 ```javascript
-  window['#R'].prototype.picture = function (doc, done) {
-      var pictures = (doc.getElementsByTagName('picture')), pic, imgAlt, sources, src, i, c,
-        media, minWidth, imgSrc, img,  sW = _w.screen.width, , pixelRatio, 
-        pr = _w.devicePixelRatio;
+      window['#R'].prototype.picture = function (doc, done) {
+    
+    
+      var pictures = (doc.getElementsByTagName('picture')), pic, attrs, sources, src, i, c,
+        media, minWidth, imgSrc, img, sW = _w.screen.width,  pixelRatio, 
+        pr = _w.devicePixelRatio || 1;//set devices pixel ratio;
                 
-      pr = pr || 1; //set devices pixel ratio;
       
       for(i = 0; i < pictures.length; i++) {
         pic = pictures[i];
-        imgAlt = pic.getAttribute('alt');
+        attrs = pic.attributes;
         sources = pic.getElementsByTagName('source');
           for(c = 0; c < sources.length; c++) {
             src = sources[c];
-            media = src.getAttribute('media'); //grab the alt
-           
+            media = src.getAttribute('media'); 
+                        
             if (media) {
               minWidth = media.match(/min-width:([0-9]+)px/);
               minWidth = minWidth ? minWidth[1] : 0; //get min-width media query for each source element
@@ -148,11 +183,19 @@ As an example, here's how we implement picture:
               if (minWidth < sW && pr === pixelRatio) { imgSrc = src; } //set imgSrc to the source element if conditions match
             }
           }
-        img = doc.createElement('img'); //create a new image element on the ghost DOM
-        img.src = imgSrc.getAttribute('src'); //set chosen src
-        img.alt = imgAlt; //set alt
         
-        pic.parentNode.replaceChild(img, pic); //replace picture element with create img element
+        if (imgSrc) {
+          img = doc.createElement('img'); //create a new image element on the ghost DOM
+
+          img.setAttribute('src', imgSrc.getAttribute('src'));
+                  
+          for(c = 0; c < attrs.length; c++) {
+           img.setAttribute(attrs[c].nodeName, attrs[c].nodeValue);        
+          }
+          
+          
+          pic.parentNode.replaceChild(img, pic); //replace picture element with create img element
+        }
       }
       
       
