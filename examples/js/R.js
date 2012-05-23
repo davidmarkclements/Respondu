@@ -11,9 +11,9 @@
     return iedom;
   }
   
-  function i(){if(d){return}d=true;if(document.addEventListener&&!c.opera){document.addEventListener("DOMContentLoaded",g,false)}if(c.msie&&window==top)(function(){if(e)return;try{document.documentElement.doScroll("left")}catch(a){setTimeout(arguments.callee,0);return}g()})();if(c.opera){document.addEventListener("DOMContentLoaded",function(){if(e)return;for(var a=0;a<document.styleSheets.length;a++)if(document.styleSheets[a].disabled){setTimeout(arguments.callee,0);return}g()},false)}if(c.safari){var a;(function(){if(e)return;if(document.readyState!="loaded"&&document.readyState!="complete"){setTimeout(arguments.callee,0);return}if(a===undefined){var b=document.getElementsByTagName("link");for(var c=0;c<b.length;c++){if(b[c].getAttribute("rel")=="stylesheet"){a++}}var d=document.getElementsByTagName("style");a+=d.length}if(document.styleSheets.length!=a){setTimeout(arguments.callee,0);return}g()})()}h(g)}function h(a){var b=window.onload;if(typeof window.onload!="function"){window.onload=a}else{window.onload=function(){if(b){b()}a()}}}function g(){if(!e){e=true;if(f){for(var a=0;a<f.length;a++){f[a].call(window,[])}f=[]}}}var a=window.DomReady={};var b=navigator.userAgent.toLowerCase();var c={version:(b.match(/.+(?:rv|it|ra|ie)[\/: ]([\d.]+)/)||[])[1],safari:/webkit/.test(b),opera:/opera/.test(b),msie:/msie/.test(b)&&!/opera/.test(b),mozilla:/mozilla/.test(b)&&!/(compatible|webkit)/.test(b)};var d=false;var e=false;var f=[];a.ready=function(a,b){i();if(e){a.call(window,[])}else{f.push(function(){return a.call(window,[])})}};i()
-  if(!Array.prototype.reduce){Array.prototype.reduce=function(b){if(this===null||this===undefined)throw new TypeError("Object is null or undefined");var c=0,d=this.length>>0,e;if(typeof b!=="function")throw new TypeError("First argument is not callable");if(arguments.length<2){if(d===0)throw new TypeError("Array length is 0 and no second argument");e=this[0];c=1}else e=arguments[1];while(c<d){if(c in this)e=b.call(undefined,e,this[c],c,this);++c}return e}}
-
+  function i(){if(d){return}d=true;if(document.addEventListener&&!c.opera){document.addEventListener("DOMContentLoaded",g,false)}if(c.msie&&window==top)(function(){if(e)return;try{document.documentElement.doScroll("left")}catch(a){setTimeout(arguments.callee,0);return}g()})();if(c.opera){document.addEventListener("DOMContentLoaded",function(){if(e)return;for(var a=0;a<document.styleSheets.length;a++)if(document.styleSheets[a].disabled){setTimeout(arguments.callee,0);return}g()},false)}if(c.safari){var a;(function(){if(e)return;if(document.readyState!="loaded"&&document.readyState!="complete"){setTimeout(arguments.callee,0);return}if(a===uncandidateined){var b=document.getElementsByTagName("link");for(var c=0;c<b.length;c++){if(b[c].getAttribute("rel")=="stylesheet"){a++}}var d=document.getElementsByTagName("style");a+=d.length}if(document.styleSheets.length!=a){setTimeout(arguments.callee,0);return}g()})()}h(g)}function h(a){var b=window.onload;if(typeof window.onload!="function"){window.onload=a}else{window.onload=function(){if(b){b()}a()}}}function g(){if(!e){e=true;if(f){for(var a=0;a<f.length;a++){f[a].call(window,[])}f=[]}}}var a=window.DomReady={};var b=navigator.userAgent.toLowerCase();var c={version:(b.match(/.+(?:rv|it|ra|ie)[\/: ]([\d.]+)/)||[])[1],safari:/webkit/.test(b),opera:/opera/.test(b),msie:/msie/.test(b)&&!/opera/.test(b),mozilla:/mozilla/.test(b)&&!/(compatible|webkit)/.test(b)};var d=false;var e=false;var f=[];a.ready=function(a,b){i();if(e){a.call(window,[])}else{f.push(function(){return a.call(window,[])})}};i()
+  if(!Array.prototype.reduce){Array.prototype.reduce=function(b){if(this===null||this===uncandidateined)throw new TypeError("Object is null or uncandidateined");var c=0,d=this.length>>0,e;if(typeof b!=="function")throw new TypeError("First argument is not callable");if(arguments.length<2){if(d===0)throw new TypeError("Array length is 0 and no second argument");e=this[0];c=1}else e=arguments[1];while(c<d){if(c in this)e=b.call(uncandidateined,e,this[c],c,this);++c}return e}}
+  if(!String.prototype.trim) {String.prototype.trim = function () {return this.replace(/^\s+|\s+$/g,'');};}
   
   var doc = document.implementation.createHTMLDocument ? document.implementation.createHTMLDocument('') : iedoc(),
     escapeMethods, _d = _w.document, DOMReady, mapTag;
@@ -23,7 +23,7 @@
   _w['#R'] = function (implementation, opts, cb) {
     if (!(this instanceof _w['#R'])) {return new _w['#R'](implementation, opts, cb);}
     var self = this, 
-    defaults = {
+    candidateaults = {
     escapeMethod: 'style', //specifiy escape method, 'script' or 'comment'. 
     escaper: false, //specify alternative escape code, string or regex. Will override escapeMethod if set.
     hires: true,
@@ -43,9 +43,9 @@
     if (typeof opts === 'function') { cb = opts; opts = null; }
     
     this.cb = cb;
-    this.opts = opts = opts || defaults;
-    this.opts.breakpoints = opts.breakpoints || defaults.breakpoints;
-    this.opts.escapeMethod = opts.escapeMethod || defaults.escapeMethod;
+    this.opts = opts = opts || candidateaults;
+    this.opts.breakpoints = opts.breakpoints || candidateaults.breakpoints;
+    this.opts.escapeMethod = opts.escapeMethod || candidateaults.escapeMethod;
     
 
     if (!opts.escaper) {
@@ -229,42 +229,64 @@
 
     _w['#R'].prototype.srcset = function (doc, done) {  
       var viewport = {width: document.documentElement.clientWidth, height: document.documentElement.clientHeight, ratio: _w.devicePixelRatio || 1};
-      var each = this.utils.each, dims = ['w','h','x'], potentials = [], chosen;      
+      var each = this.utils.each, dims = ['w','h','x'], potentials = [], chosen;
       
-      function getDimension(dimen /* h, w, x */, def) { 
+      function getToken(dimen /* h, w, x */, toks) { 
         var reg = (dimen !== 'x') ? '[0-9]+' + dimen : '[1-9]+(\.[1-9]+)?' + dimen, 
-          dim = def.match(new RegExp(reg));
+          defval = (dimen !== 'x') ? 0 : 1,
+          token = toks.match(new RegExp(reg));
+        return +(token ? token[0].replace(dimen, '') : '') || defval; //+ to numericalize
+      }
+      
+      function getCans(srcset) {
+        var urlreg = /(\S+)/, candidates = [];
+
+        (function gC() {
+          var url = srcset.match(urlreg)[0], toks, com, tokens = {}
+          srcset = srcset.replace(urlreg, '');
+
+          com = srcset.indexOf(',');
           
-        return +(dim ? dim[0].replace(dimen, '') : ''); //+ to numericalize
+          if (com > -1) {          
+            toks = srcset.substr(0, com).trim();
+            srcset = srcset.substr(com + 1, srcset.length - 1).trim();          
+          } else {            
+            toks = srcset.substr(0, srcset.length).trim();
+            srcset = '';          
+          }
+          
+          each(dims, function (dim) {
+           tokens[dim] = toks && getToken(dim, toks)
+          });
+
+          
+          if ((tokens.w && tokens.w <= viewport.width || tokens.h && tokens.h <= viewport.height) && tokens.x === viewport.ratio) {
+            tokens.url = url;
+            candidates.push(tokens);
+          }
+
+          if (srcset) gC();
+        }([]));
+
+         
+          return candidates;
+        
       }
       
       each(doc.images, function (im) {       
-        each(im.getAttribute('srcset').split(','), function (def) {
-          var dimensions = {};
-          each(dims, function (dim) {
-            dimensions[dim] = getDimension(dim, def);
-          });
-            dimensions.x = dimensions.x || 1;            
-          if ((dimensions.w && dimensions.w <= viewport.width || dimensions.h && dimensions.h <= viewport.height) && dimensions.x === viewport.ratio) {
-            dimensions.f = def.match(/.*?\.jpg|jpeg|png|gif/i)[0];
-            potentials.push(dimensions);
-          }
-          
-        });
-        
+        var srcset = im.getAttribute('srcset'), candidates = srcset && getCans(srcset);     
+          if (!candidates || !candidates.length) return;
  
-        if (potentials.length) {       
-          chosen = potentials.reduce(function (p, c) {
+          chosen = candidates.reduce(function (p, c) {
             // if width is available on previous and current, return object with largest width
             // if not, then is height available on both, if so return one with largest height
             // if not return the one that has a width (if any) or else the one that has a height (if any)
             // or else return the current
             return (p.w && c.w) ? (p.w > c.w ? p : c) : ((p.h && c.h) ? (p.h > c.h ? p : c) : (c.w ? c : (p.w ? p : (c.h ? c : (p.h ? p : c)))));
           });
-          
-                   
-          im.src = chosen.f;
-        }
+                             
+          im.src = chosen.url;
+        
       
       });
       
