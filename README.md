@@ -279,8 +279,11 @@ Browsers Confirmed as Working
 
 * Chrome
 * IE 8
+* IE 9
 * Firefox
 * iOS Safari
+* Safari (win)
+* Opera
 
 Issues
 ===
