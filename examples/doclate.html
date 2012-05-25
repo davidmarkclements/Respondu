@@ -1,0 +1,27 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<style>img {width:100%} /* use fluid layouts :) */</style>
+<script>   function i(){if(d){return}d=true;if(document.addEventListener&&!c.opera){document.addEventListener("DOMContentLoaded",g,false)}if(c.msie&&window==top)(function(){if(e)return;try{document.documentElement.doScroll("left")}catch(a){setTimeout(arguments.callee,0);return}g()})();if(c.opera){document.addEventListener("DOMContentLoaded",function(){if(e)return;for(var a=0;a<document.styleSheets.length;a++)if(document.styleSheets[a].disabled){setTimeout(arguments.callee,0);return}g()},false)}if(c.safari){var a;(function(){if(e)return;if(document.readyState!="loaded"&&document.readyState!="complete"){setTimeout(arguments.callee,0);return}if(a===uncandidateined){var b=document.getElementsByTagName("link");for(var c=0;c<b.length;c++){if(b[c].getAttribute("rel")=="stylesheet"){a++}}var d=document.getElementsByTagName("style");a+=d.length}if(document.styleSheets.length!=a){setTimeout(arguments.callee,0);return}g()})()}h(g)}function h(a){var b=window.onload;if(typeof window.onload!="function"){window.onload=a}else{window.onload=function(){if(b){b()}a()}}}function g(){if(!e){e=true;if(f){for(var a=0;a<f.length;a++){f[a].call(window,[])}f=[]}}}var a=window.DomReady={};var b=navigator.userAgent.toLowerCase();var c={version:(b.match(/.+(?:rv|it|ra|ie)[\/: ]([\d.]+)/)||[])[1],safari:/webkit/.test(b),opera:/opera/.test(b),msie:/msie/.test(b)&&!/opera/.test(b),mozilla:/mozilla/.test(b)&&!/(compatible|webkit)/.test(b)};var d=false;var e=false;var f=[];a.ready=function(a,b){i();if(e){a.call(window,[])}else{f.push(function(){return a.call(window,[])})}};i() </script>
+<script src=http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.js></script>
+<script src='js/doclate.js'></script>
+<script src='js/R.js'></script>
+
+<script>
+//works with $(document).ready, $(document).bind('ready') or just $()
+//without doclate.js, this will fail because the document is ready
+//before the processed ghost doc is inserted
+$(document).ready(function () {$('body').append($('img')[0].src);})
+</script>
+
+</head>
+<body>
+<script>window['#R']();</script>
+<noscript>
+<img src="/images/photo.jpg">
+</noscript></script>
+
+
+</body>
+</html>
+

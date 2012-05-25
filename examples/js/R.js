@@ -10,15 +10,16 @@
     iedom.close();  
     return iedom;
   }
-  
-  function i(){if(d){return}d=true;if(document.addEventListener&&!c.opera){document.addEventListener("DOMContentLoaded",g,false)}if(c.msie&&window==top)(function(){if(e)return;try{document.documentElement.doScroll("left")}catch(a){setTimeout(arguments.callee,0);return}g()})();if(c.opera){document.addEventListener("DOMContentLoaded",function(){if(e)return;for(var a=0;a<document.styleSheets.length;a++)if(document.styleSheets[a].disabled){setTimeout(arguments.callee,0);return}g()},false)}if(c.safari){var a;(function(){if(e)return;if(document.readyState!="loaded"&&document.readyState!="complete"){setTimeout(arguments.callee,0);return}if(a===uncandidateined){var b=document.getElementsByTagName("link");for(var c=0;c<b.length;c++){if(b[c].getAttribute("rel")=="stylesheet"){a++}}var d=document.getElementsByTagName("style");a+=d.length}if(document.styleSheets.length!=a){setTimeout(arguments.callee,0);return}g()})()}h(g)}function h(a){var b=window.onload;if(typeof window.onload!="function"){window.onload=a}else{window.onload=function(){if(b){b()}a()}}}function g(){if(!e){e=true;if(f){for(var a=0;a<f.length;a++){f[a].call(window,[])}f=[]}}}var a=window.DomReady={};var b=navigator.userAgent.toLowerCase();var c={version:(b.match(/.+(?:rv|it|ra|ie)[\/: ]([\d.]+)/)||[])[1],safari:/webkit/.test(b),opera:/opera/.test(b),msie:/msie/.test(b)&&!/opera/.test(b),mozilla:/mozilla/.test(b)&&!/(compatible|webkit)/.test(b)};var d=false;var e=false;var f=[];a.ready=function(a,b){i();if(e){a.call(window,[])}else{f.push(function(){return a.call(window,[])})}};i()
+  var DOMReady;  
+  function i(){if(d){return}d=true;if(document.addEventListener&&!c.opera){document.addEventListener("DOMContentLoaded",g,false)}if(c.msie&&_w==top)(function(){if(e)return;try{document.documentElement.doScroll("left")}catch(a){setTimeout(arguments.callee,0);return}g()})();if(c.opera){document.addEventListener("DOMContentLoaded",function(){if(e)return;for(var a=0;a<document.styleSheets.length;a++)if(document.styleSheets[a].disabled){setTimeout(arguments.callee,0);return}g()},false)}if(c.safari){var a;(function(){if(e)return;if(document.readyState!="loaded"&&document.readyState!="complete"){setTimeout(arguments.callee,0);return}if(a===uncandidateined){var b=document.getElementsByTagName("link");for(var c=0;c<b.length;c++){if(b[c].getAttribute("rel")=="stylesheet"){a++}}var d=document.getElementsByTagName("style");a+=d.length}if(document.styleSheets.length!=a){setTimeout(arguments.callee,0);return}g()})()}h(g)}function h(a){var b=_w.onload;if(typeof _w.onload!="function"){_w.onload=a}else{_w.onload=function(){if(b){b()}a()}}}function g(){if(!e){e=true;if(f){for(var a=0;a<f.length;a++){f[a].call(_w,[])}f=[]}}}var a={};var b=navigator.userAgent.toLowerCase();var c={version:(b.match(/.+(?:rv|it|ra|ie)[\/: ]([\d.]+)/)||[])[1],safari:/webkit/.test(b),opera:/opera/.test(b),msie:/msie/.test(b)&&!/opera/.test(b),mozilla:/mozilla/.test(b)&&!/(compatible|webkit)/.test(b)};var d=false;var e=false;var f=[];DOMReady=function(a,b){i();if(e){a.call(_w,[])}else{f.push(function(){return a.call(_w,[])})}};i()  
   if(!Array.prototype.reduce){Array.prototype.reduce=function(b){if(this===null||this===uncandidateined)throw new TypeError("Object is null or uncandidateined");var c=0,d=this.length>>0,e;if(typeof b!=="function")throw new TypeError("First argument is not callable");if(arguments.length<2){if(d===0)throw new TypeError("Array length is 0 and no second argument");e=this[0];c=1}else e=arguments[1];while(c<d){if(c in this)e=b.call(uncandidateined,e,this[c],c,this);++c}return e}}
   if(!String.prototype.trim) {String.prototype.trim = function () {return this.replace(/^\s+|\s+$/g,'');};}
-  
+ 
+
   var doc = document.implementation.createHTMLDocument ? document.implementation.createHTMLDocument('') : iedoc(),
-    escapeMethods, _d = _w.document, DOMReady, mapTag;
+    escapeMethods, _d = _w.document, mapTag;
     
-  DOMReady = _w.DomReady.ready;  
+
 
   _w['#R'] = function (implementation, opts, cb) {
     if (!(this instanceof _w['#R'])) {return new _w['#R'](implementation, opts, cb);}
@@ -46,23 +47,14 @@
     this.opts = opts = opts || candidateaults;
     this.opts.breakpoints = opts.breakpoints || candidateaults.breakpoints;
     this.opts.escapeMethod = opts.escapeMethod || candidateaults.escapeMethod;
-    
-
-    if (!opts.escaper) {
-      opts.escaper = { //s for string, r for regex
-        script: '<script id=respondu type=responsive/html>', //endtag </noscript></script>
-        style: '<style id=respondu type=responsive/html>', //endtag </noscript></style>
-        '<!--' : '<!--'
-      }[opts.escapeMethod];
+ 
       
-      mapTag = {
-        script: 'ecma',
-        style: 'css',
-       '<!--': 'comment',     
-      }[opts.escapeMethod];
+      opts.escaper = "<style id=respondu type=responsive/html>";
+      mapTag = 'css';
+	
       
 
-    }
+
     
     DOMReady(function() {
       var _b = _d.getElementsByTagName('body')[0]
@@ -150,7 +142,12 @@
         if (cb) { 
           cb(res ? respond(_w.screen.width) : doc);
         } else {         
-          _b.innerHTML = res ? respond(_w.screen.width).body.innerHTML : doc.body.innerHTML;  
+          _b.innerHTML = res ? respond(_w.screen.width).body.innerHTML : doc.body.innerHTML;
+          
+          //cause document.ready stuff to work with doclate.js
+          if (document['#later']) document['#later']();
+
+            
           this.utils.next(doc.getElementsByTagName('script'), function(scr, next) {
             if (!scr) return;
             var el = _d.createElement('script');
@@ -173,18 +170,12 @@
             next();                 
           });
         }
-        
-        /*if (_w.jQuery)*/ //console.log('TODO: implement faux document ready event');       
      
-     }
-     
-     
-
-    
+   
+     }    
   
     _w['#R'].prototype.picture = function (doc, done) {
-    
-    
+      
       var pictures = (doc.getElementsByTagName('picture')), pic, attrs, sources, src, i, c,
         media, minWidth, imgSrc, img, sW = _w.screen.width,  pixelRatio, 
         pr = _w.devicePixelRatio || 1;//set devices pixel ratio;
@@ -297,3 +288,4 @@
 
   
 }(window));
+
