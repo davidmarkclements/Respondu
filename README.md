@@ -13,7 +13,7 @@ Features
 * Very gentle to the global scope
 * Create your own responsive techniques (implementations)!
 * Forward looking - simple feature detection (once we know how to detect) will cause it to become easily compatible with future browsers
-* ** Now works seamlessly with jQuery's $(document).ready! **
+* **Now works seamlessly with jQuery's $(document).ready!**
 
 Inclusive Implementations 
 ===
