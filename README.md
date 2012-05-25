@@ -273,10 +273,24 @@ content etc.
 
 doclate
 ===
-If you're using jQuery, and absolutely need to include scripts in the head but you're using $(document).ready
+If you're using jQuery, and absolutely need to include scripts in the head but you're using `$(document).ready`
 to defer execution until the DOM has loaded then Respondu can accomodate you. 
 
-Just include doclate.js in yourheader, 
+Just include doclate.js after jQuery, but before R.js
+
+```
+<script src=//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.js></script>
+<script src='js/doclate.js'></script>
+<script src='js/R.js'></script>
+```
+
+In production you'll probably want to merge (and minify) doclate.js and R.js to reduce the amount of
+HTTP connections on page load.
+
+Any calls to any variations of jQuery's DOM ready (`$(document).ready(fn)`, `$(document).bind('ready', fn)`  or simply `$(fn)`)
+will be buffered by doclate and then executed (in order) by R.js after all the responsive processing has completed.
+
+Whilst this makes things easier, it's not as efficient as simply including your scripts at the bottom of the body.
 
 
 Browsers Confirmed as Working
@@ -290,26 +304,17 @@ Browsers Confirmed as Working
 * Safari (win)
 * Opera
 
-Issues
+Things to Avoid
 ===
-* doesn't (yet) work well with $(document).ready et. al., since dom is ready before we insert code
-* If scripts are placed after the noscript tag, they will be executed before the content has loaded
-* The current solution is to place scripts that parse DOM elements at the end of noscript tag, but `</script>` end tags break the functionality
-* Therefore scripts with src'es shall be included with `<script src='blah' />` INSIDE the `<noscript>` tags **TODO**
-* Inline scripts in the body, well, I haven't worked inline scripts out yet. 
-
+* If scripts are placed after the noscript tag (instead of inside), they will be executed before the content has loaded
 
 
 Todo
 ===
 
-* implement faux document ready event
 * Tidy & optimize
 * testing in more browsers
-* working examples
 * explain the callback functionality
-* rethink the name (suggestions?)
-
 
 
 Contributing
