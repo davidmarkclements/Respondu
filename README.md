@@ -1,4 +1,4 @@
-Respondu 0.0.1alpha
+Respondu 0.0.1
 ==
 
 A cross browser platform for implementing and creating gracefully degrading Responsive techniques
@@ -13,6 +13,7 @@ Features
 * Very gentle to the global scope
 * Create your own responsive techniques (implementations)!
 * Forward looking - simple feature detection (once we know how to detect) will cause it to become easily compatible with future browsers
+* ** Now works seamlessly with jQuery's $(document).ready! **
 
 Inclusive Implementations 
 ===
@@ -149,7 +150,7 @@ the format for creating an implementation is:
 ```
 
 The `doc` parameter is a DOM object (but not the actual DOM)
-We `done` paremeter is called as a function when processing is complete 
+The `done` paremeter is called as a function when processing is complete 
 (using the `done` callback function allows for any async stuff)
 
 As an example, here's how we could implement picture (already included):
@@ -253,7 +254,7 @@ The ghost DOM doesn't load any src's. We can manipulate this ghost DOM as the `d
 
 Once all changes have been made to our ghost document (e.g. when we've replaced img src's according to screen width), we load it into the real document
 
-Inline Scripts
+Body Scripts
 ===
 If we want to have scripts execute once the DOM has loaded, the best place for them (if possible) is usually just before the closing `</body>` tag.
 If you're using Respondu, you want them to be just before the closing `</noscript></style>` tags, Respondu will then ensure they are loaded and executed
@@ -270,8 +271,12 @@ content etc.
 </body>
 ```
 
-TODO: $(document).ready (and variants) naturally triggers before we process and push out content, Respondu will manually re-trigger
-      these calls. Alternatively, just place your scripts before the closing `</noscript>` tag and remove the $(document).ready
+doclate
+===
+If you're using jQuery, and absolutely need to include scripts in the head but you're using $(document).ready
+to defer execution until the DOM has loaded then Respondu can accomodate you. 
+
+Just include doclate.js in yourheader, 
 
 
 Browsers Confirmed as Working
