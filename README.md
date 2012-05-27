@@ -20,6 +20,7 @@ Inclusive Implementations
 
 * picture
 * srcset
+* hybrid (**NEW** combination of picture and srcset)
 * pure javascript (breakpoints object)
 
 Examples
@@ -81,8 +82,10 @@ Break points can be set thusly
 Using Implementations
 ===
 Respondu also provides an implementations system,
-it currently includes the picture and srcset implementations. 
+it currently includes the picture and srcset implementations plus the new hybrid implementation which combines the best of both. 
 
+Picture
+====
 For picture we would do something like
 
 ```html
@@ -114,6 +117,9 @@ For picture we would do something like
 </html>
 ```
 
+srcset
+====
+
 For srcset we could do
 
 ```html
@@ -135,6 +141,32 @@ For srcset we could do
 </body>
 </html>
 ```
+
+hybrid
+====
+
+With hybrid we can place the `srcset` attribute onto `<source>` elements to describe alternative images
+for pixel density - this halves the amount of required `<source>` elements for supporting 1x and 2x pixel ratios.
+
+```html
+<script>window['#R']('hybrid');</script>
+<noscript>
+<picture id=thepic alt="Alt tag describing the image represented"> 
+    <source src="images/photo.small.jpg" srcset="images/photo.small@2x.jpg 2x"> 
+    <source src="images/photo.medium.jpg" media="min-width:321px" srcset="images/photo.medium@2x.jpg 2x">
+    <source src="images/photo.large.jpg" media="min-width:641px" srcset="images/photo.large@2x.jpg 2x">
+    <source src="images/photo.xlarge.jpg" media="min-width:1281px" srcset="images/photo.xlarge@2x.jpg 2x">
+    
+    <img src="images/photo.jpg" />
+</picture>
+</noscript></style>
+```
+
+You could also define the other srcset tokens (width and height) on the `source` elements
+srcset would superscede the media attribute. However using the media attribute is preferred as it gives more 
+flexibility (min-width, max-width (todo) orientation (todo)).
+
+The hybrid implementation supports plain `<picture>` markup, a normal `<img>` with `srcset` attribute and the above hybrid markup.
 
 Creating an Implementation
 ===
