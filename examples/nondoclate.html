@@ -1,0 +1,27 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<style>img {width:100%} /* use fluid layouts :) */</style>
+<script src=//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.js></script>
+<!--<script src='js/doclate.js'></script>-->
+<script src='js/R.js'></script>
+
+<script>
+//works with $(document).ready, $(document).bind('ready') or just $()
+//without doclate.js, this will fail because the document is ready
+//before the processed ghost doc is inserted
+$(document).ready(function () {$('#info').html('Loaded src: ' + $('img')[0].src);})
+</script>
+
+</head>
+<body>
+<script>window['#R']();</script>
+<noscript>
+<div id=info> This text is overwritten with the images src on document ready, you shouldn't see this text if doclate.js is included. Check out the <a href=doclate.html>doclate example</a></div>
+<img src="/images/photo.jpg">
+</noscript></script>
+
+
+</body>
+</html>
+

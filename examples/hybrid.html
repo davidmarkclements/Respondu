@@ -1,0 +1,24 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<style>img {width:100%} /* use fluid layouts :) */</style>
+<script src=js/R.js></script>
+</head>
+<body>
+
+<script>window['#R']('hybrid');</script>
+<noscript>
+<picture id=thepic alt="Alt tag describing the image represented"> 
+    <source src="images/photo.small.jpg" srcset="images/photo.small@2x.jpg 2x"> 
+    <source src="images/photo.medium.jpg" media="min-width:321px" srcset="images/photo.medium@2x.jpg 2x">
+    <source src="images/photo.large.jpg" media="min-width:641px" srcset="images/photo.large@2x.jpg 2x">
+    <source src="images/photo.xlarge.jpg" media="min-width:1281px" srcset="images/photo.xlarge@2x.jpg 2x">
+    
+    <img src="images/photo.jpg" />
+</picture>
+</noscript></style>
+
+
+</body>
+</html>
+
