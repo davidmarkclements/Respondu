@@ -18,10 +18,10 @@ Features
 Inclusive Implementations 
 ===
 
-* picture
-* srcset
-* hybrid (**NEW** combination of picture and srcset)
-* pure javascript (breakpoints object)
+* [#picture](picture)
+* [#srcset](srcset)
+* [#hybrid](hybrid) (**NEW** combination of picture and srcset)
+* [#basic-use](pure javascript) (breakpoints object)
 
 Examples
 ===
