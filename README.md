@@ -84,8 +84,8 @@ Using Implementations
 Respondu also provides an implementations system,
 it currently includes the picture and srcset implementations plus the new hybrid implementation which combines the best of both. 
 
-picture
-----
+## picture
+
 For picture we would do something like
 
 ```html
@@ -117,8 +117,8 @@ For picture we would do something like
 </html>
 ```
 
-srcset
-----
+## srcset
+
 
 For srcset we could do
 
@@ -142,8 +142,8 @@ For srcset we could do
 </html>
 ```
 
-hybrid
-----
+## hybrid
+
 
 With hybrid we can place the `srcset` attribute onto `<source>` elements to describe alternative images
 for pixel density - this halves the amount of required `<source>` elements for supporting 1x and 2x pixel ratios.
