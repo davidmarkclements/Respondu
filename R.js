@@ -12,7 +12,7 @@
   }
   var DOMReady;  
   function i(){if(d){return}d=true;if(document.addEventListener&&!c.opera){document.addEventListener("DOMContentLoaded",g,false)}if(c.msie&&_w==top)(function(){if(e)return;try{document.documentElement.doScroll("left")}catch(a){setTimeout(arguments.callee,0);return}g()})();if(c.opera){document.addEventListener("DOMContentLoaded",function(){if(e)return;for(var a=0;a<document.styleSheets.length;a++)if(document.styleSheets[a].disabled){setTimeout(arguments.callee,0);return}g()},false)}if(c.safari){var a;(function(){if(e)return;if(document.readyState!="loaded"&&document.readyState!="complete"){setTimeout(arguments.callee,0);return}if(a===uncandidateined){var b=document.getElementsByTagName("link");for(var c=0;c<b.length;c++){if(b[c].getAttribute("rel")=="stylesheet"){a++}}var d=document.getElementsByTagName("style");a+=d.length}if(document.styleSheets.length!=a){setTimeout(arguments.callee,0);return}g()})()}h(g)}function h(a){var b=_w.onload;if(typeof _w.onload!="function"){_w.onload=a}else{_w.onload=function(){if(b){b()}a()}}}function g(){if(!e){e=true;if(f){for(var a=0;a<f.length;a++){f[a].call(_w,[])}f=[]}}}var a={};var b=navigator.userAgent.toLowerCase();var c={version:(b.match(/.+(?:rv|it|ra|ie)[\/: ]([\d.]+)/)||[])[1],safari:/webkit/.test(b),opera:/opera/.test(b),msie:/msie/.test(b)&&!/opera/.test(b),mozilla:/mozilla/.test(b)&&!/(compatible|webkit)/.test(b)};var d=false;var e=false;var f=[];DOMReady=function(a,b){i();if(e){a.call(_w,[])}else{f.push(function(){return a.call(_w,[])})}};i()  
-  if(!Array.prototype.reduce){Array.prototype.reduce=function(b){if(this===null||this===uncandidateined)throw new TypeError("Object is null or uncandidateined");var c=0,d=this.length>>0,e;if(typeof b!=="function")throw new TypeError("First argument is not callable");if(arguments.length<2){if(d===0)throw new TypeError("Array length is 0 and no second argument");e=this[0];c=1}else e=arguments[1];while(c<d){if(c in this)e=b.call(uncandidateined,e,this[c],c,this);++c}return e}}
+  if(!Array.prototype.reduce){Array.prototype.reduce = function(b){if(this===null||this===uncandidateined)throw new TypeError("Object is null or uncandidateined");var c=0,d=this.length>>0,e;if(typeof b!=="function")throw new TypeError("First argument is not callable");if(arguments.length<2){if(d===0)throw new TypeError("Array length is 0 and no second argument");e=this[0];c=1}else e=arguments[1];while(c<d){if(c in this)e=b.call(uncandidateined,e,this[c],c,this);++c}return e}}
   if(!String.prototype.trim) {String.prototype.trim = function () {return this.replace(/^\s+|\s+$/g,'');};}
  
 
@@ -177,7 +177,7 @@
     _w['#R'].prototype.picture = function (doc, done) {
       
       var pictures = (doc.getElementsByTagName('picture')), pic, attrs, sources, src, i, c,
-        media, minWidth, imgSrc, img, sW = _w.screen.width,  pixelRatio, 
+        media, minWidth, sourceImg, img, sW = _w.screen.width,  pixelRatio, 
         pr = _w.devicePixelRatio || 1;//set devices pixel ratio;
                 
       
@@ -186,8 +186,8 @@
         attrs = pic.attributes;
         sources = pic.getElementsByTagName('source');
           for(c = 0; c < sources.length; c++) {
-            src = sources[c];
-            media = src.getAttribute('media'); 
+            srcel = sources[c];
+            media = srcel.getAttribute('media'); 
                         
             if (media) {
               minWidth = media.match(/min-width:([0-9]+)px/);
@@ -196,14 +196,16 @@
               pixelRatio = media.match(/min-device-pixel-ratio:([0-9]+)/); //get min-device-pixel-ratio
               pixelRatio = pixelRatio ? pixelRatio[1] : 1; 
                             
-              if (minWidth < sW && pr === pixelRatio) { imgSrc = src; } //set imgSrc to the source element if conditions match
+              if (minWidth < sW && pr === pixelRatio) { sourceImg = srcel; } //set imgSrc to the source element if conditions match              
+              
             }
           }
         
-        if (imgSrc) {
+        if (sourceImg) {
           img = doc.createElement('img'); //create a new image element on the ghost DOM
 
-          img.setAttribute('src', imgSrc.getAttribute('src'));
+          img.setAttribute('src', sourceImg.getAttribute('src'));
+          img.setAttribute('srcset', sourceImg.getAttribute('srcset')); //this is for hybrid, but is used in picture for convenience
                   
           for(c = 0; c < attrs.length; c++) {
            img.setAttribute(attrs[c].nodeName, attrs[c].nodeValue);        
@@ -217,6 +219,14 @@
       
       done(); //finished.
     }
+    
+    _w['#R'].prototype.hybrid = function (doc, done) {
+      var self = this;
+      self.picture(doc, function () {
+        self.srcset(doc, done);
+      });      
+    }
+    
 
     _w['#R'].prototype.srcset = function (doc, done) {  
       var viewport = {width: document.documentElement.clientWidth, height: document.documentElement.clientHeight, ratio: _w.devicePixelRatio || 1};
@@ -258,10 +268,9 @@
 
           if (srcset) gC();
         }([]));
-
-         
-          return candidates;
         
+          return candidates;
+                  
       }
       
       each(doc.images, function (im) {       

@@ -1,24 +1,39 @@
 <!DOCTYPE HTML>
 <html>
 <head>
+<link href='http://fonts.googleapis.com/css?family=Lato:700&text=abcdeEfFGhiIklmnoprRstTuwx' rel='stylesheet' type='text/css'>
+
 <style> 
-a {display:block;text-decoration:none}
+#wrap {width: 380px;}
+#egs a {display:block;text-decoration:none;padding:0.25em;color:#000;font-family: 'Helvetica', sans-serif;font-size:0.95em}
+#egs a:hover {background:#ddd;border-radius:3px;-o-border-radius:3px;-webkit-border-radius:3px;-mozilla-border-radius:3px;}
+a span {font-size:0.75em;display:block}
+h1, h2, b {margin:0; font-family: 'Lato', serif;}
+h2 {margin:0.8em 0 0.2em}
+.twitter-follow-button {position:relative;top:0.4em}
 </style>
 </head>
 <body>
+<div id=wrap>
+<div id=egs>
 <h1> Respondu Examples </h1>
+<h2> Implementations </h2>
 <a href=srcset.html>srcset implementation</a>
 <a href=picture.html>picture implementation</a>
+<a href=hybrid.html>hybrid implementation <span>(picture with srcset on source elements)</span></a>
 <a href=standard.html>JavaScript implementation</a>
 
  
-<hr>
-<a href=bodyScripts.html>Inline and External scripts in noscript tags</a>
-<a href=jquery.html>Example with jQuery Integration</a>
- 
- 
+<h2> Framework Infrastructure </h2>
+<a href=bodyScripts.html>Inline and External scripts in body noscript tags</a>
+<a href=doclate.html>Functioning jQuery(document).ready using doclate.js</a>
+<a href=nondoclate.html>Non-functioning $(document).ready without doclate.js</a>
+</div>
+<hr> 
+<div><b> Github: </b> <a href=https://github.com/davidmarkclements/Respondu>https://github.com/davidmarkclements/Respondu</a></div>
+<div><b> Twitter: </b> 
+<a href="https://twitter.com/davidmarkclem" class="twitter-follow-button" data-show-count="false">Follow @davidmarkclem</a>
+<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="//platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script></div> 
 </body>
 </html>
- 
-
 
