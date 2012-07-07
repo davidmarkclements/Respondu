@@ -24,17 +24,18 @@
   _w['#R'] = function (implementation, opts, cb) {
     if (!(this instanceof _w['#R'])) {return new _w['#R'](implementation, opts, cb);}
     var self = this, 
-    candidateaults = {
+    defaults = {
     escapeMethod: 'style', //specifiy escape method, 'script' or 'comment'. 
     escaper: false, //specify alternative escape code, string or regex. Will override escapeMethod if set.
     hires: true,
-    hiresSuffix: '@2x', 
+    hiresSuffix: '@2x',
+    className: 'responsive',
+    typical: 'small',
     breakpoints: { //
-        typical: 640,
-        small: 320,  
-        medium: 640, //configurable properties, will be reflected in requested image e.g. name.medium.png       
-        large: 1280,
-        xlarge: Infinity  //largest size set to infinity
+        small: 320,
+        medium: 640, 
+        large: 1280, //configurable properties, will be reflected in requested image e.g. name.medium.png       
+        xlarge: Infinity //largest size set to infinity 
       }
     }
     
@@ -44,9 +45,14 @@
     if (typeof opts === 'function') { cb = opts; opts = null; }
     
     this.cb = cb;
-    this.opts = opts = opts || candidateaults;
-    this.opts.breakpoints = opts.breakpoints || candidateaults.breakpoints;
-    this.opts.escapeMethod = opts.escapeMethod || candidateaults.escapeMethod;
+    opts = opts || defaults;
+    
+    opts.breakpoints.typical = opts.breakpoints[opts.typical];
+    delete opts.breakpoints[opts.typical];
+    
+    this.opts = opts;
+    this.opts.breakpoints = opts.breakpoints || defaults.breakpoints;
+    this.opts.escapeMethod = opts.escapeMethod || defaults.escapeMethod;
  
       
       opts.escaper = "<style id=respondu type=responsive/html>";
@@ -92,6 +98,13 @@
 
     
   }
+  
+   var utils = _w['#R'].prototype.utils = {
+      each: each,    
+      next: next,
+      loadScripts: loadScripts
+    }
+  
     function each(collection, cb, done) {
         var el, i;
         for(i = 0; i < collection.length; i++) {
@@ -103,19 +116,59 @@
 
     function next(collection, cb) {
         if (!collection) return;
-        if (!(collection instanceof Array)) {      
-          collection = [].slice.call(collection);
+        function proceed() {
+          cb(collection.shift(), function () {
+            next(collection, cb);
+          });
         }
-        cb(collection.shift(), function () {
-          this.utils.next(collection, cb);
-        });
-    }  
-    
-    _w['#R'].prototype.utils = {
-      each: each,    
-      next: next
+        if (!(collection instanceof Array)) {      
+          var a = [];
+          try { collection = a.slice.call(collection); proceed();} 
+          catch (e) { //for ie6/7/8 + Blackberry browser
+            each(collection, function (item) {a.push(item)}, function () { collection = a; proceed(); });  
+          }
+          return;
+        }
+        proceed();
     }
-  
+    
+    function loadScripts (doc, _b) {
+          //cause document.ready stuff to work with doclate.js
+      if (document['#later']) document['#later']();
+
+        
+      utils.next(doc.getElementsByTagName('script'), function(scr, next) {
+        if (!scr) {
+          document.documentElement.className = document.documentElement.className.replace('responding','')
+          return;
+        }
+        var el = _d.createElement('script');
+
+        if (scr.attributes && scr.attributes.length) { 
+         utils.each(scr.attributes, function (attr) {  
+            el.setAttribute(attr.nodeName, attr.nodeValue);
+           }, function () {                  
+             el.onload = function () {
+               el.onloadDone = true;
+               next();                  
+             }
+             el.onreadystatechange = function () {
+                 if ( ( "loaded" === el.readyState || "complete" === el.readyState ) && ! el.onloadDone ) {
+                    el.onloadDone = true;
+                    next();                      
+                 }
+              }
+              
+             if (el.src) _b.appendChild(el);
+             
+           });
+          return;              
+        }            
+        if (scr.innerHTML) eval(scr.innerHTML);
+        next();                 
+      });        
+    }
+    
      _w['#R'].prototype.implement = function (doc, res) {      
         var cb = this.cb, opts = this.opts,
           _b = _d.getElementsByTagName('body')[0]
@@ -133,6 +186,7 @@
           }
           
           each(doc.images, function (im) {
+            if (opts.className && (!im.className || !im.className.match(opts.className))) return;
             im.setAttribute('src', im.getAttribute('src').replace(/(.+)\.(.+)$/, '$1.' + size + '$2'));
           });
           
@@ -140,45 +194,27 @@
         }
         
         if (cb) { 
-          cb(res ? respond(_w.screen.width) : doc);
+          cb(res ? respond(_w.screen.width) : doc, function () {   document.body.innerHTML = doc.body.innerHTML; loadScripts(doc, _b); });
         } else {         
           _b.innerHTML = res ? respond(_w.screen.width).body.innerHTML : doc.body.innerHTML;
-          
-          //cause document.ready stuff to work with doclate.js
-          if (document['#later']) document['#later']();
+          loadScripts(doc, _b)          
 
-            
-          this.utils.next(doc.getElementsByTagName('script'), function(scr, next) {
-            if (!scr) return;
-            var el = _d.createElement('script');
-
-            if (scr.attributes && scr.attributes.length) { 
-             this.utils.each(scr.attributes, function (attr) {  
-                el.setAttribute(attr.nodeName, attr.nodeValue);
-
-               }, function () {                  
-                 _w['#R-script'] = function () {
-                  next();
-                 }
-                 el.setAttribute('onload', 'javascript:window["#R-script"]();');
-     
-                 if (el.src) _b.appendChild(el);
-               });
-              return;              
-            }            
-            if (scr.innerHTML) eval(scr.innerHTML);
-            next();                 
-          });
         }
      
    
      }    
   
-    _w['#R'].prototype.picture = function (doc, done) {
+   
+  
+}(window));
+
+
+
+  window['#R'].prototype.picture = function (doc, done) {
       
       var pictures = (doc.getElementsByTagName('picture')), pic, attrs, sources, src, i, c,
-        media, minWidth, sourceImg, img, sW = _w.screen.width,  pixelRatio, 
-        pr = _w.devicePixelRatio || 1;//set devices pixel ratio;
+        media, minWidth, sourceImg, img, sW = window.screen.width,  pixelRatio, 
+        pr = window.devicePixelRatio || 1;//set devices pixel ratio;
                 
       
       for(i = 0; i < pictures.length; i++) {
@@ -220,7 +256,7 @@
       done(); //finished.
     }
     
-    _w['#R'].prototype.hybrid = function (doc, done) {
+    window['#R'].prototype.hybrid = function (doc, done) {
       var self = this;
       self.picture(doc, function () {
         self.srcset(doc, done);
@@ -228,8 +264,8 @@
     }
     
 
-    _w['#R'].prototype.srcset = function (doc, done) {  
-      var viewport = {width: document.documentElement.clientWidth, height: document.documentElement.clientHeight, ratio: _w.devicePixelRatio || 1};
+    window['#R'].prototype.srcset = function (doc, done) {  
+      var viewport = {width: document.documentElement.clientWidth, height: document.documentElement.clientHeight, ratio: window.devicePixelRatio || 1};
       var each = this.utils.each, dims = ['w','h','x'], potentials = [], chosen;
       
       function getToken(dimen /* h, w, x */, toks) { 
@@ -295,6 +331,4 @@
     }
 
 
-  
-}(window));
 

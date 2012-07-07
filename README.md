@@ -1,7 +1,18 @@
-Respondu 0.0.1
+Respondu 0.0.2
 ==
 
 A cross browser platform for implementing and creating gracefully degrading Responsive techniques
+
+New Features in 0.0.2
+===
+* Now supports IE8 + IE7
+* Improved code base
+* Modularized code for great customisation
+  * R.base provides [basic use](#basic-use)
+  * R.srcset, R.picture, and R.hybrid can be combined with R.base to become a polyfill for the respective implementation
+  * Combine with doclate for seamless jQuery compatability
+
+
 
 Features
 ===
@@ -329,6 +340,7 @@ Browsers Confirmed as Working
 ===
 
 * Chrome
+* IE 7
 * IE 8
 * IE 9
 * Firefox
