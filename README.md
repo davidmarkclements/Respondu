@@ -6,12 +6,12 @@ A cross browser platform for implementing and creating gracefully degrading Resp
 New Features in 0.0.2
 ===
 * Now supports IE8 + IE7
+* Intelligently triggers window.onload and $(window).load in IE7/8/9
 * Improved code base
 * Modularized code for great customisation
   * R.base provides [basic use](#basic-use)
   * R.srcset, R.picture, and R.hybrid can be combined with R.base to become a polyfill for the respective implementation
   * Combine with doclate for seamless jQuery compatability
-
 
 
 Features
@@ -356,8 +356,6 @@ Things to Avoid
 Todo
 ===
 
-* Tidy & optimize
-* testing in more browsers
 * explain the callback functionality
 
 

@@ -1,4 +1,5 @@
 (function (_w) {
+
   function iedoc() {
     var root, iedom = new ActiveXObject("htmlfile");
     iedom.appendChild(iedom.createElement('html'));
@@ -110,7 +111,7 @@
           el = collection[i];
           cb(el);
         }
-        if (done) done();
+        if (done) done(el); //pass in last el to done in case further processing is required
       }
 
     function next(collection, cb) {
@@ -187,6 +188,13 @@
           each(doc.images, function (im) {
             if (opts.className && (!im.className || !im.className.match(opts.className))) return;
             im.setAttribute('src', im.getAttribute('src').replace(/(.+)\.(.+)$/, '$1.' + size + '$2'));
+          }, function (lastim) {
+            //Sorry for Teh Hax0r Cod3z...forces window.load / $(window).load in IE browsers
+            /*@cc_on
+             @if (@_jscript_version >= 5)              
+              lastim.setAttribute('onload', "(function () {if (jQuery) {jQuery(window).trigger('load'); return;}  window.onload()}())");           
+             @end
+            @*/
           });
           
           return doc;
