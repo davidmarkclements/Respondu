@@ -12,7 +12,7 @@ New Features in 0.0.4
 * API changes
   * New plugin API for creating plugins of implementations
   * changed `Respondu()` to simply `Respondu()`
-* New hack method: instead of `<noscript></noscript-->` Respondu now uses `<noscript></noscript-->`
+* New hack method: instead of `<noscript></noscript></style>` Respondu now uses `<noscript></noscript-->`
   * The closing `</noscript-->` *must* have the two dashes for cross browser compatibility
   * *Warning* Do not use `<!-- -->` (comment tags) inside the `<noscript>` tag*
     * This will break the functionality some browsers (ie, safari)
