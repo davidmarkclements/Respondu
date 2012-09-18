@@ -1,7 +1,15 @@
-Respondu 0.0.2
+Respondu 0.0.3
 ==
 
 A cross browser platform for implementing and creating gracefully degrading Responsive techniques
+
+New Features in 0.0.3
+===
+* Standardisation of picture element has made hybrid solution inaccurate/reduntant so hybrid has been removed, picture will be updated in 0.0.4
+* Now includes grunt.js file to automatically build R.js
+* Customized builds available in the builds folder
+* Future version will have a builder gui for fine grain control
+
 
 New Features in 0.0.2
 ===
