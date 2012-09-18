@@ -8,23 +8,13 @@
 
 <script>window['#R']('picture');</script>
 <noscript>
-<picture id=thepic alt="Alt tag describing the image represented"> 
-    <source src="images/photo.small.jpg"/> 
-    <source src="images/photo.small@2x.jpg" media="-webkit-min-device-pixel-ratio:2,-moz-min-device-pixel-ratio:2,-o-min-device-pixel-ratio: 2/1,min-device-pixel-ratio:2"/> 
-
-    <source src="images/photo.medium.jpg" media="min-width:321px"/> 
-    <source src="images/photo.medium@2x.jpg" media="min-width:321px and -webkit-min-device-pixel-ratio:2,-moz-min-device-pixel-ratio:2,-o-min-device-pixel-ratio: 2/1,min-device-pixel-ratio:2"/> 
-
-    <source src="images/photo.large.jpg" media="min-width:641px"/> 
-    <source src="images/photo.large@2x.jpg" media="min-width:641px and -webkit-min-device-pixel-ratio:2,-moz-min-device-pixel-ratio:2,-o-min-device-pixel-ratio: 2/1,min-device-pixel-ratio:2"/> 
-
-    <source src="images/photo.xlarge.jpg" media="min-width:1281px" /> 
-    <source src="images/photo.xlarge@2x.jpg" media="min-width:1281px and -webkit-min-device-pixel-ratio:2,-moz-min-device-pixel-ratio:2,-o-min-device-pixel-ratio: 2/1,min-device-pixel-ratio:2" /> 
-    
-    <img src="images/photo.jpg" />
+<picture id=thepic> 
+    <source srcset="images/photo.small.jpg 1x, images/photo.small.jpg 2x"/> 
+    <source media="(min-width:320px)" srcset="images/photo.medium.jpg 1x, images/photo.medium@2x.jpg 2x"/> 
+    <source media="(min-width:640px)" srcset="images/photo.large.jpg 1x, images/photo.large@2x.jpg 2x"/> 
+    <source media="(min-width:1280px)" srcset="images/photo.xlarge.jpg 1x, images/photo.xlarge@2x.jpg 2x" />   
+    <img src="images/photo.jpg" alt="Alt tag describing the image represented"/>
 </picture>
-
-
 </noscript></style>
 
 
