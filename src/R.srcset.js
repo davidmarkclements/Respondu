@@ -1,4 +1,9 @@
 Respondu.plugin('srcset', function (doc, done, utils) {
+  if ('srcset' in document.createElement('img')) { //if srcset is implemented then just pass through
+    if (done) done();
+    return; 
+  }
+  
   var viewport = {width: document.documentElement.clientWidth, height: document.documentElement.clientHeight, ratio: window.devicePixelRatio || 1};
   var each = utils.each, dims = ['w','h','x'], potentials = [], chosen;
   

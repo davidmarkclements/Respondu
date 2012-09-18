@@ -163,7 +163,6 @@
         function respond(scrWth) {
           var size = '', key, i;
           if (scrWth <= opts.breakpoints.typical) return doc;
-          alert(scrWth)
           delete opts.breakpoints.typical;
           for (key in opts.breakpoints) {
             if (opts.breakpoints.hasOwnProperty(key)) {            
@@ -289,6 +288,11 @@ Respondu.plugin('picture', function (doc, done) {
 });    
 
 Respondu.plugin('srcset', function (doc, done, utils) {
+  if ('srcset' in document.createElement('img')) { //if srcset is implemented then just pass through
+    if (done) done();
+    return; 
+  }
+  
   var viewport = {width: document.documentElement.clientWidth, height: document.documentElement.clientHeight, ratio: window.devicePixelRatio || 1};
   var each = utils.each, dims = ['w','h','x'], potentials = [], chosen;
   

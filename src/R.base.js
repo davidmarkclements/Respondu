@@ -163,7 +163,6 @@
         function respond(scrWth) {
           var size = '', key, i;
           if (scrWth <= opts.breakpoints.typical) return doc;
-          alert(scrWth)
           delete opts.breakpoints.typical;
           for (key in opts.breakpoints) {
             if (opts.breakpoints.hasOwnProperty(key)) {            
