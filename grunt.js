@@ -6,17 +6,18 @@ module.exports = function(grunt) {
     dist: {
       src: ['src/R.base.js', 'src/R.picture.js', 'src/R.srcset.js'],
       dest: 'R.js'
-    }
+    },
+    example: {
+        src: ['src/R.base.js', 'src/R.picture.js', 'src/R.srcset.js'],
+        dest: 'examples/js/R.js'
+      },    
   },
   min: {
     dist: {
       src: ['src/R.base.js', 'src/R.picture.js', 'src/R.srcset.js'],
       dest: 'R.min.js'
     },    
-    example: {
-        src: ['src/R.base.js', 'src/R.picture.js', 'src/R.srcset.js'],
-        dest: 'examples/js/R.js'
-      },
+
     picture: {
       src: ['src/R.base.js', 'src/R.picture.js'],
       dest: 'builds/R.picture.min.js'
@@ -24,7 +25,13 @@ module.exports = function(grunt) {
     srcset: {
       src: ['src/R.base.js', 'src/R.srcset.js'],
       dest: 'builds/R.srcset.min.js'
-    }    
+    },
+    
+    loadScriptsExample: {
+        src: ['src/R.base.js', 'src/loadScripts.js'],
+        dest: 'examples/js/R.withLoadScripts.js'
+   },   
+    
   },
   
   server: {
@@ -33,7 +40,7 @@ module.exports = function(grunt) {
   },
   
   watch: {
-    files: ['src/R.base.js', 'src/R.picture.js', 'src/R.srcset.js'],
+    files: ['src/R.base.js', 'src/R.picture.js', 'src/R.srcset.js', 'src/loadScripts.js'],
     tasks: 'concat min'
   }
   

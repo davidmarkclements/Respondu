@@ -1,6 +1,6 @@
 {
   "name": "Respondu",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "An Extendible Deferred Asset Responsive Framework",
   "directories": {
     "example": "examples"

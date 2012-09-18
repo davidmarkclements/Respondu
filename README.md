@@ -1,7 +1,40 @@
-Respondu 0.0.3
+Respondu 0.0.4
 ==
 
 A cross browser platform for implementing and creating gracefully degrading Responsive techniques
+
+
+New Features in 0.0.4
+===
+* Full uncustomized R.js minified and gzipped weighs at *2.8kb*
+  * This can be reduced with custom builds - e.g. just including picture and not srcset brings us down to 2.4kb
+* Picture updated to new syntax according to [proposed spec]http://dvcs.w3.org/hg/html-proposals/raw-file/tip/responsive-images/responsive-images.html)
+* API changes
+  * New plugin API for creating plugins of implementations
+  * changed `Respondu()` to simply `Respondu()`
+* New hack method: instead of `<noscript></noscript-->` Respondu now uses `<noscript></noscript-->`
+  * The closing `</noscript-->` *must* have the two dashes for cross browser compatibility
+  * *Warning* Do not use `<!-- -->` (comment tags) inside the `<noscript>` tag*
+    * This will break the functionality some browsers (ie, safari)
+    * If you wish to make comments within the noscript tags use `<script>/*comment here*/</script>`
+* Behavioural changes
+  * Instead of putting all content in `<noscript>` tags, only relevant content (such as a picture element) goes inside a noscript tag
+  * The call to Respondu isolates the following `<noscript></noscript-->` tag, processes the code and reinserts it in the place where Respondu is called
+  * This leads to a more familiar, progressive loading experience
+  * It also means R.base has been trimmed down, there's no need for loadScripts, doclate, window.open hackarounds etc
+    * Infrastructure examples have been removed, since this functionality is no longer needful
+  * Any scripts should go outside the noscript tag, the contents of the noscript tags should only be for assets you wish to responsively select the source for
+* Stronger compatibility for source elements
+  * It turns out some browsers *cough* iOS Safari *cough* sometimes strip source tags unless they're in a video element, this is secured against
+* Picture/srcset now check for a browser implementation before processing (i.e. Respondu can now be used as a polyfill)
+* Includes matchMedia polyfill for use in plugin implementations (and could be used anywhere in a project)
+
+
+TODO for 0.0.5
+===
+  * Needs retesting in browsers
+  * Improve picture further
+  * Get picture media attributes working with em's
 
 New Features in 0.0.3
 ===
@@ -39,7 +72,6 @@ Inclusive Implementations
 
 * [picture](#picture)
 * [srcset](#srcset)
-* [hybrid](#hybrid) (**NEW** combination of picture and srcset)
 * [pure javascript](#basic-use) (breakpoints object)
 
 Examples
@@ -59,21 +91,21 @@ Basic Use
 </head>
 <body>
 
-<script>window['#R']();</script>
+<script>Respondu();</script>
 <noscript>
 
 <img src="/images/responsive.jpg">
 
-</noscript></style>
+</noscript-->
 </body>
 </html>
 
 ```
 
-The end tags `</noscript></style>` are essential for Respondu to operate in certain browsers (Safari, IE8)
+The end dashes in `</noscript-->` are essential for Respondu to operate in certain browsers (Safari, IE8)
 and to block the img src's from loading prior to responsive processing. 
 
-The positioning of the window['#R'] call in the body, just before the noscript tag is also essential. See How It Works. 
+The positioning of the Respondu call in the body, just before the noscript tag is also essential. See How It Works. 
 
 Basic usage will apply the default breakpoints
 
@@ -90,7 +122,7 @@ Setting Breakpoints
 Break points can be set thusly
 
 ```html
-<script>window['#R']({breakpoints: {
+<script>Respondu({breakpoints: {
   typical:300, 
   small: 500, 
   medium: 1200, 
@@ -111,27 +143,21 @@ For picture we would do something like
 <!DOCTYPE HTML>
 <html>
 <head>
+<link href='css/style.css' rel='stylesheet' type='text/css'>
 <script src=R.js></script>
 </head>
 <body>
 
-<script>window['#R']('picture');</script>
+<script>Respondu('picture');</script>
 <noscript>
-<picture alt="Alt tag describing the image represented"> 
-    <source src="photo-s.jpg"/> 
-    <source src="photo-s@2x.jpg" media="-webkit-min-device-pixel-ratio:2,-moz-min-device-pixel-ratio:2,-o-min-device-pixel-ratio: 2/1,min-device-pixel-ratio:2"/> 
-
-    <source src="photo-m.jpg" media="min-width:321px"/> 
-    <source src="photo-m@2x.jpg" media="min-width:321px and -webkit-min-device-pixel-ratio:2,-moz-min-device-pixel-ratio:2,-o-min-device-pixel-ratio: 2/1,min-device-pixel-ratio:2"/> 
-
-    <source src="photo-l.jpg" media="min-width:641px"/> 
-    <source src="photo-l@2x.jpg" media="min-width:641px and -webkit-min-device-pixel-ratio:2,-moz-min-device-pixel-ratio:2,-o-min-device-pixel-ratio: 2/1,min-device-pixel-ratio:2"/> 
-
-    <source src="photo-xl.jpg" media="min-width:1281px" /> 
-    <source src="photo-xl@2x.jpg" media="min-width:1281px and -webkit-min-device-pixel-ratio:2,-moz-min-device-pixel-ratio:2,-o-min-device-pixel-ratio: 2/1,min-device-pixel-ratio:2" /> 
-    <img src="photo-s.jpg" />
+<picture id=thepic> 
+    <source srcset="images/photo.small.jpg 1x, images/photo.small.jpg 2x">
+    <source media="(min-width:320px)" srcset="images/photo.medium.jpg 1x, images/photo.medium@2x.jpg 2x">
+    <source media="(min-width:640px)" srcset="images/photo.large.jpg 1x, images/photo.large@2x.jpg 2x">
+    <source media="(min-width:1280px)" srcset="images/photo.xlarge.jpg 1x, images/photo.xlarge@2x.jpg 2x">
+    <img src="images/photo.jpg" alt="Alt tag describing the image represented">
 </picture>
-</noscript></style>
+</noscript-->
 </body>
 </html>
 ```
@@ -145,17 +171,17 @@ For srcset we could do
 <!DOCTYPE HTML>
 <html>
 <head>
-<style>img {width:100%} /* use fluid layouts :) */</style>
+<link href='css/style.css' rel='stylesheet' type='text/css'>
 <script src=js/R.js></script>
 </head>
 <body>
 
-<script>window['#R']('srcset');</script>
+<script>Respondu('srcset');</script>
 <noscript>
 
 <img src="images/photo.jpg" srcset="images/photo.small.jpg 320w, images/photo.small@2x.jpg 320w 2x, images/photo.medium.jpg 640w, images/photo.medium@2x.jpg 640w 2x, images/photo.large.jpg 1280w, images/photo.large@2x.jpg 1280w 2x, images/photo.xlarge.jpg 20000w, images/photo.xlarge@2x.jpg 20000w x2">
 
-</noscript></style>
+</noscript-->
 
 </body>
 </html>
@@ -163,14 +189,14 @@ For srcset we could do
 
 Creating an Implementation
 ===
-We create an implementation by adding it to the window['#R'] prototype, 
+We create an implementation by adding it to the Respondu prototype, 
 the format for creating an implementation is:
 
 ```javascript
-  _w['#R'].prototype.MyNewImplementation = function (doc, done) {
+  Respondu.plugin('MyNewImplementation', function (doc, done) {
     // all your code here
     done();
-  }
+  });
 
 ```
 
@@ -178,70 +204,107 @@ The `doc` parameter is a DOM object (but not the actual DOM)
 The `done` paremeter is called as a function when processing is complete 
 (using the `done` callback function allows for any async stuff)
 
-As an example, here's how we could implement picture (already included):
-
-```javascript
-      window['#R'].prototype.picture = function (doc, done) {
-    
-    
-      var pictures = (doc.getElementsByTagName('picture')), pic, attrs, sources, src, i, c,
-        media, minWidth, imgSrc, img, sW = _w.screen.width,  pixelRatio, 
-        pr = _w.devicePixelRatio || 1;//set devices pixel ratio;
-                
-      
-      for(i = 0; i < pictures.length; i++) {
-        pic = pictures[i];
-        attrs = pic.attributes;
-        sources = pic.getElementsByTagName('source');
-          for(c = 0; c < sources.length; c++) {
-            src = sources[c];
-            media = src.getAttribute('media'); 
-                        
-            if (media) {
-              minWidth = media.match(/min-width:([0-9]+)px/);
-              minWidth = minWidth ? minWidth[1] : 0; //get min-width media query for each source element
-              
-              pixelRatio = media.match(/min-device-pixel-ratio:([0-9]+)/); //get min-device-pixel-ratio
-              pixelRatio = pixelRatio ? pixelRatio[1] : 1; 
-                            
-              if (minWidth < sW && pr === pixelRatio) { imgSrc = src; } //set imgSrc to the source element if conditions match
-            }
-          }
-        
-        if (imgSrc) {
-          img = doc.createElement('img'); //create a new image element on the ghost DOM
-
-          img.setAttribute('src', imgSrc.getAttribute('src'));
-                  
-          for(c = 0; c < attrs.length; c++) {
-           img.setAttribute(attrs[c].nodeName, attrs[c].nodeValue);        
-          }
-          
-          
-          pic.parentNode.replaceChild(img, pic); //replace picture element with create img element
-        }
-      }
-      
-      
-      done(); //finished.
-    }
-
-```
-
 We could then use it with
 ```html
-<script>window['#R']('MyNewImplementation');</script>
+<script>Respondu('MyNewImplementation');</script>
 ```
 
-*Don't put closing &lt;script&gt; tags inside &lt;noscript&gt; tags! This will ruin EVERYTHING*
 
-Instead use a self closing syntax  (*TODO*)
+Here's how we could implement picture (already included):
 
-```html
-<script src=path_to_my_script />
+```javascript
+Respondu.plugin('picture', function (doc, done) {
+  if ('srcset' in document.createElement('picture')) { //if picture is implemented then just pass through
+    if (done) done();
+    return; 
+  }
+
+  var pictures = (doc.getElementsByTagName('picture')), pic, attrs, sources, src, i, c,
+    media, sourceImg, img, sW = window.screen.width,  pixelRatio, 
+    pr = window.devicePixelRatio || 1;//set devices pixel ratio;
+        
+  for(i = 0; i < pictures.length; i++) {
+    pic = pictures[i];
+
+    attrs = pic.attributes;
+    sources = pic.getElementsByTagName('source');
+    
+    sourceCandidates = [];
+    
+    for(c = 0; c < sources.length; c++) {
+      srcel = sources[c];
+      media = srcel.getAttribute('media'); 
+      //!media means no media attribute, so will be used if no other source elements qualify                        
+      if (!media || matchMedia(media).matches) { sourceCandidates.push(srcel); }                                                                                          
+    }
+    
+    var x = sourceCandidates.length, closest = 0;
+    
+    if (x > 1) {
+      while(x--) {
+        media = sourceCandidates[x].getAttribute('media');
+        if (!media && sourceCandidates.length > 1) { 
+          delete sourceCandidates[x];
+          break;
+        }
+        
+        media = media.match(/\((min|max)-width:([0-9]+)(px|em)\)/);
+        
+        
+        if (Math.abs(media[2] - sW) <= Math.abs(closest - sW)) {
+          closest = media[2];
+          sourceImg = sourceCandidates[x];
+        }
+      
+      }
+    } else {
+      sourceImg = sourceCandidates[0];
+    }
+   
+    var srcset, srcsetCounter, srcsetToken, imageSrc;
+    if (sourceImg) {
+      srcset = sourceImg.getAttribute('srcset').split(',');
+      
+      srcsetCounter = srcset.length;
+      
+      while (srcsetCounter--) {
+        srcsetToken = srcset[srcsetCounter].replace(/^\s\s*/, '').replace(/\s\s*$/, '').split(' ');
+        
+        if (srcsetToken[1] === pr + 'x') {
+          imageSrc = srcsetToken[0];
+        }
+        
+        if (!srcsetToken[1]) {
+          //no density supplied, assume default
+          imageSrc = srcsetToken[0];            
+        }
+      
+      
+      }
+    
+    
+      img = doc.createElement('img'); //create a new image element on the ghost DOM
+
+      img.setAttribute('src', imageSrc);
+
+              
+      for(c = 0; c < attrs.length; c++) {
+       img.setAttribute(attrs[c].nodeName, attrs[c].nodeValue);        
+      }
+      
+     
+      pic.parentNode.replaceChild(img, pic); //replace picture element with created img element
+    }
+  }
+  
+
+
+  done(); //finished.
+});    
+
 ```
 
-This isn't supported in browsers, but Respondu supports (*TODO*) it to sidestep the whole &lt;/script&gt; in &lt;noscript&gt; issue
+
 
 How It Works
 ===
@@ -255,20 +318,20 @@ We do this by dynamically wrapping the `<noscript>` tags in another context - th
 
 After experimentation and thought, Respondu's chosen way is to wrap the `<noscript>` tags with `<style>` tags, this seems to be the least invasive.
 
-So once the script on the page has executed we end up with `<style type="text/responsive"><noscript>#content#</noscript></style>`, this prevents the content in the
+So once the script on the page has executed we end up with `<style type="text/responsive"><noscript>#content#</noscript-->`, this prevents the content in the
 noscript tags from being removed, and allows us to extract the contents from the noscript tags. 
 
 As a result, any inline styles in the body (..which are really unneccessary and sub-optimal) should be included with `<css>` tags instead of `<style>`
 tags, e.g.
 
 ```
-<script>window['#R']();</script>
+<script>Respondu();</script>
 <noscript>
 content etc.
 <css>
   #silly {color:blue}
 </css>
-</noscript></style>
+</noscript-->
 ```
 
 Respondu will parse the css tags, and convert them to style tags. 
@@ -282,17 +345,17 @@ Once all changes have been made to our ghost document (e.g. when we've replaced 
 Body Scripts
 ===
 If we want to have scripts execute once the DOM has loaded, the best place for them (if possible) is usually just before the closing `</body>` tag.
-If you're using Respondu, you want them to be just before the closing `</noscript></style>` tags, Respondu will then ensure they are loaded and executed
+If you're using Respondu, you want them to be just before the closing `</noscript-->` tags, Respondu will then ensure they are loaded and executed
 after all the content has loaded. 
 
 ```
 <body>
-<script>window['#R']();</script>
+<script>Respondu();</script>
 <noscript>
 content etc.
 
 <script src=myScriptWhichWillManipulateTheDocument.js></script>
-</noscript></style>
+</noscript-->
 </body>
 ```
 
@@ -318,7 +381,7 @@ will be buffered by doclate and then executed (in order) by R.js after all the r
 Whilst this makes things easier, it's not as efficient as simply including your scripts at the bottom of the body.
 
 
-Browsers Confirmed as Working
+Browsers Confirmed as Working (tentative, re-testing required)
 ===
 
 * Chrome
@@ -329,11 +392,6 @@ Browsers Confirmed as Working
 * iOS Safari
 * Safari (win)
 * Opera
-
-Things to Avoid
-===
-* If scripts are placed after the noscript tag (instead of inside), they will be executed before the content has loaded
-
 
 Todo
 ===
