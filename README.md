@@ -316,31 +316,21 @@ So Respondu uses a hack to to ensure the content can be extracted from all brows
 
 We do this by dynamically wrapping the `<noscript>` tags in another context - there are several ways: comments, textareas, script tags, style tags...
 
-After experimentation and thought, Respondu's chosen way is to wrap the `<noscript>` tags with `<style>` tags, this seems to be the least invasive.
+After experimentation and thought, Respondu's chosen way is to use the `<noscript>#content#</noscript-->` technique, once Respondu has been called
+we have `<--<noscript>#content#<noscript-->`. The dashes in the closing noscript tag enables us to close a dynamically inserted comment opener.
 
-So once the script on the page has executed we end up with `<style type="text/responsive"><noscript>#content#</noscript-->`, this prevents the content in the
-noscript tags from being removed, and allows us to extract the contents from the noscript tags. 
+Dynamically wrapping the noscript tags in a comment prevents browsers such as IE and Safari from stripping the contents out of noscript. 
+Respondu reliest on being called just before the noscript tags, so that it
+  1) Knows where to insert the opening `<!--` *and*
+  2) Knows where in the document to insert the final processed code
 
-As a result, any inline styles in the body (..which are really unneccessary and sub-optimal) should be included with `<css>` tags instead of `<style>`
-tags, e.g.
-
-```
-<script>Respondu();</script>
-<noscript>
-content etc.
-<css>
-  #silly {color:blue}
-</css>
-</noscript-->
-```
-
-Respondu will parse the css tags, and convert them to style tags. 
-It's really just best to avoid inline styles if you can.
+As a result, we can't put HTML comments inside our noscript tags (which means conditional comments are out). If we really want to have 
+comments within our noscript HTML we can use `<script>/*comment here*/</script>`
 
 Once the noscript content has been extracted, Respondu loads it into a "ghost DOM". (see [createHTMLDocument](https://developer.mozilla.org/en/DOM/DOMImplementation.createHTMLDocument))
 The ghost DOM doesn't load any src's. We can manipulate this ghost DOM as the `doc` parameter when creating implementations (see [Creating an Implementation](#creating-an-implementation))
 
-Once all changes have been made to our ghost document (e.g. when we've replaced img src's according to screen width), we load it into the real document
+When all changes have been made to our ghost document (e.g. when we've replaced img src's according to screen width), we load it into the real document
 
 Body Scripts
 ===
