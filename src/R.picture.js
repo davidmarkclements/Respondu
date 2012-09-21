@@ -1,16 +1,16 @@
 Respondu.plugin('picture', function (doc, done) {
   if ('srcset' in document.createElement('picture')) { //if picture is implemented then just pass through
-    if (done) done();
+	  if (done) done();
     return; 
-  }
-
+  }  
+  
   var pictures = (doc.getElementsByTagName('picture')), pic, attrs, sources, src, i, c,
     media, sourceImg, img, sW = window.screen.width,  pixelRatio, 
     pr = window.devicePixelRatio || 1;//set devices pixel ratio;
-        
+  
+    
   for(i = 0; i < pictures.length; i++) {
     pic = pictures[i];
-
     attrs = pic.attributes;
     sources = pic.getElementsByTagName('source');
     
