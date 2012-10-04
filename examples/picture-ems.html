@@ -1,0 +1,23 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<link href='css/style.css' rel='stylesheet' type='text/css'>
+<script src=js/R.js></script>
+</head>
+<body>
+
+<script>Respondu('picture');</script>
+<noscript>
+<picture id=thepic> 
+    <source srcset="images/photo.small.jpg 1x, images/photo.small.jpg 2x"/> 
+    <source media="(min-width:20em)" srcset="images/photo.medium.jpg 1x, images/photo.medium@2x.jpg 2x"/> 
+    <source media="(min-width:40em)" srcset="images/photo.large.jpg 1x, images/photo.large@2x.jpg 2x"/> 
+    <source media="(min-width:80em)" srcset="images/photo.xlarge.jpg 1x, images/photo.xlarge@2x.jpg 2x" />   
+    <img src="images/photo.jpg" alt="Alt tag describing the image represented"/>
+</picture>
+</noscript></style>
+
+
+</body>
+</html>
+

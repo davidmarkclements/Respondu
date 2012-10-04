@@ -14,7 +14,7 @@
   function i(){if(d){return}d=true;if(document.addEventListener&&!c.opera){document.addEventListener("DOMContentLoaded",g,false)}if(c.msie&&_w==top)(function(){if(e)return;try{document.documentElement.doScroll("left")}catch(a){setTimeout(arguments.callee,0);return}g()})();if(c.opera){document.addEventListener("DOMContentLoaded",function(){if(e)return;for(var a=0;a<document.styleSheets.length;a++)if(document.styleSheets[a].disabled){setTimeout(arguments.callee,0);return}g()},false)}if(c.safari){var a;(function(){if(e)return;if(document.readyState!="loaded"&&document.readyState!="complete"){setTimeout(arguments.callee,0);return}if(a===undefined){var b=document.getElementsByTagName("link");for(var c=0;c<b.length;c++){if(b[c].getAttribute("rel")=="stylesheet"){a++}}var d=document.getElementsByTagName("style");a+=d.length}if(document.styleSheets.length!=a){setTimeout(arguments.callee,0);return}g()})()}h(g)}function h(a){var b=_w.onload;if(typeof _w.onload!="function"){_w.onload=a}else{_w.onload=function(){if(b){b()}a()}}}function g(){if(!e){e=true;if(f){for(var a=0;a<f.length;a++){f[a].call(_w,[])}f=[]}}}var a={};var b=navigator.userAgent.toLowerCase();var c={version:(b.match(/.+(?:rv|it|ra|ie)[\/: ]([\d.]+)/)||[])[1],safari:/webkit/.test(b),opera:/opera/.test(b),msie:/msie/.test(b)&&!/opera/.test(b),mozilla:/mozilla/.test(b)&&!/(compatible|webkit)/.test(b)};var d=false;var e=false;var f=[];DOMReady=function(a,b){i();if(e){a.call(_w,[])}else{f.push(function(){return a.call(_w,[])})}};i()  
   if(!Array.prototype.reduce){Array.prototype.reduce = function(b){if(this===null||this===undefined)throw new TypeError("Object is null or undefined");var c=0,d=this.length>>0,e;if(typeof b!=="function")throw new TypeError("First argument is not callable");if(arguments.length<2){if(d===0)throw new TypeError("Array length is 0 and no second argument");e=this[0];c=1}else e=arguments[1];while(c<d){if(c in this)e=b.call(undefined,e,this[c],c,this);++c}return e}}
   if(!String.prototype.trim) {String.prototype.trim = function () {return this.replace(/^\s+|\s+$/g,'');};}
-  window.matchMedia=window.matchMedia||function(a,b){var c,d=a.documentElement,e=d.firstElementChild||d.firstChild,f=a.createElement("body"),g=a.createElement("div");g.id="mq-test-1";g.style.cssText="position:absolute;top:-100em";f.style.background="none";f.appendChild(g);return function(a){g.innerHTML='Â­<style media="'+a+'"> #mq-test-1 { width: 42px; }</style>';d.insertBefore(f,e);c=g.offsetWidth===42;d.removeChild(f);return{matches:c,media:a}}}(document) 
+  
 
   var doc = document.implementation.createHTMLDocument ? document.implementation.createHTMLDocument('') : iedoc(),
    _d = _w.document, mapTag;
@@ -24,6 +24,7 @@
   _w.Respondu = function (implementation, opts, cb) {
     if (!(this instanceof _w.Respondu)) {return new _w.Respondu(implementation, opts, cb);}
   
+    alert(Respondu.ltIE9);
     var self = this, 
     defaults = {
     escaper: "<!--", //specify alternative escape code
@@ -72,9 +73,17 @@
         x = _h
            .replace(/<\/?noscript(.+)?>?/g, '') //remove the noscript tags
            .replace(/(<picture(.+)?>)/g,'$1<video>') //iOS Safari at least strips source tags unless they're wrapped in video tags
-           
+       
+        if (Respondu.ltIE9) {       
+          x = x.replace(/<picture/g, '<div data-element="picture"').replace(/<source/g,'<p data-element="source"');
+        }
+
+        
+        if (document.documentMode && document.documentMode < 9) x = x.replace(/<picture/g, '<div data-element="picture"').replace(/<source/g,'<p data-element="source"'); 
+        
         doc.body.innerHTML = x;
-        console.log(doc.body.innerHTML);
+        
+        //console.log(x, doc.body.innerHTML);
       }
       
       toProcess = self.context.nextSibling;
@@ -197,6 +206,7 @@
      }    
   
 }(window));
+
 
 
 

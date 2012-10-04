@@ -4,15 +4,32 @@ Respondu.plugin('picture', function (doc, done) {
     return; 
   }  
   
-  var pictures = (doc.getElementsByTagName('picture')), pic, attrs, sources, src, i, c,
+  var pictures = doc.getElementsByTagName('picture'), pic, attrs, sources, src, i, c,
     media, sourceImg, img, sW = window.screen.width,  pixelRatio, 
     pr = window.devicePixelRatio || 1;//set devices pixel ratio;
-  
     
+
+  
+  if (!pictures.length) {
+    pictures = doc.getElementsByTagName('div');
+    c = pictures.length;
+    while (c--) {
+      if (pictures[c].attributes['data-element'].nodeValue !== 'picture') delete pictures[c];
+    }
+  }
+      
   for(i = 0; i < pictures.length; i++) {
     pic = pictures[i];
     attrs = pic.attributes;
     sources = pic.getElementsByTagName('source');
+    
+    if (!sources.length) {
+      sources = doc.getElementsByTagName('p');
+      c = sources.length;
+      while (c--) {
+        if (sources[c].attributes['data-element'].nodeValue !== 'source') delete sources[c];
+      }
+    }
     
     sourceCandidates = [];
     
@@ -21,7 +38,7 @@ Respondu.plugin('picture', function (doc, done) {
       media = srcel.getAttribute('media'); 
       //!media means no media attribute, so will be used if no other source elements qualify                        
       if (!media || matchMedia(media).matches) { sourceCandidates.push(srcel); }                                                                                          
-    }
+    }   
     
     var x = sourceCandidates.length, closest = 0;
     
@@ -86,3 +103,8 @@ Respondu.plugin('picture', function (doc, done) {
 
   done(); //finished.
 });    
+
+
+
+
+

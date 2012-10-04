@@ -1,87 +1,35 @@
-Respondu 0.0.4
+Respondu 0.0.5
 ==
 
 A cross browser platform for implementing and creating gracefully degrading Responsive techniques
 
 
-New Features in 0.0.4
-===
-* Full uncustomized R.js minified and gzipped weighs at *2.8kb*
-  * This can be reduced with custom builds - e.g. just including picture and not srcset brings us down to 2.4kb
-* Picture updated to new syntax according to [proposed spec]http://dvcs.w3.org/hg/html-proposals/raw-file/tip/responsive-images/responsive-images.html)
-* API changes
-  * New plugin API for creating plugins of implementations
-  * changed `Respondu()` to simply `Respondu()`
-* New hack method: instead of `<noscript></noscript></style>` Respondu now uses `<noscript></noscript-->`
-  * The closing `</noscript-->` *must* have the two dashes for cross browser compatibility
-  * *Warning* Do not use `<!-- -->` (comment tags) inside the `<noscript>` tag*
-    * This will break the functionality some browsers (ie, safari)
-    * If you wish to make comments within the noscript tags use `<script>/*comment here*/</script>`
-* Behavioural changes
-  * Instead of putting all content in `<noscript>` tags, only relevant content (such as a picture element) goes inside a noscript tag
-  * The call to Respondu isolates the following `<noscript></noscript-->` tag, processes the code and reinserts it in the place where Respondu is called
-  * This leads to a more familiar, progressive loading experience
-  * It also means R.base has been trimmed down, there's no need for loadScripts, doclate, window.open hackarounds etc
-    * Infrastructure examples have been removed, since this functionality is no longer needful
-  * Any scripts should go outside the noscript tag, the contents of the noscript tags should only be for assets you wish to responsively select the source for
-* Stronger compatibility for source elements
-  * It turns out some browsers *cough* iOS Safari *cough* sometimes strip source tags unless they're in a video element, this is secured against
-* Picture/srcset now check for a browser implementation before processing (i.e. Respondu can now be used as a polyfill)
-* Includes matchMedia polyfill for use in plugin implementations (and could be used anywhere in a project)
 
+##Features
 
-TODO for 0.0.5
-===
-  * Needs retesting in browsers
-  * Improve picture further
-  * Get picture media attributes working with em's
-
-New Features in 0.0.3
-===
-* Standardisation of picture element has made hybrid solution inaccurate/reduntant so hybrid has been removed, picture will be updated in 0.0.4
-* Now includes grunt.js file to automatically build R.js
-* Customized builds available in the builds folder
-* Future version will have a builder gui for fine grain control
-
-
-New Features in 0.0.2
-===
-* Now supports IE8 + IE7
-* Intelligently triggers window.onload and $(window).load in IE7/8/9
-* Improved code base
-* Modularized code for great customisation
-  * R.base provides [basic use](#basic-use)
-  * R.srcset, R.picture, and R.hybrid can be combined with R.base to become a polyfill for the respective implementation
-  * Combine with doclate for seamless jQuery compatability
-
-
-Features
-===
-
-* Relatively Unintrustive
-* Entirely client side
-* **DEFERS SRC LOADING TILL PROCESSING IS FINISHED!**
+* Simple straightforward syntax
+* Entirely client side solution, no unneccessary HTTP requests
+* No Double Downloads - Defers loading of src's until code has been parsed
+* Write code exactly as specified by the proposed standards (e.g. use actual picture tags, instead of divs and data attributes)
 * Gracefully Degrades for non-JS clients (e.g. search bots)
-* Very gentle to the global scope
-* Create your own responsive techniques (implementations)!
-* Forward looking - simple feature detection (once we know how to detect) will cause it to become easily compatible with future browsers
-* **Now works seamlessly with jQuery's $(document).ready!**
+* Easy plugin system that allows you to write custom imlpementations (e.g. roll your own responsive video code)
+* Forward looking - simple feature detection renders seamless compatible with future browsers
+* Custom builds with grunt allows you to take only what you need
 
-Inclusive Implementations 
-===
+
+
+###Included Implementations 
 
 * [picture](#picture)
 * [srcset](#srcset)
 * [pure javascript](#basic-use) (breakpoints object)
 
-Examples
-===
+##Examples
 
 Examples can be found at [http://respondu.davidmarkclements.com](http://respondu.davidmarkclements.com)
 
 
-Basic Use
-===
+##Basic Use
 
 ```html
 <!DOCTYPE HTML>
@@ -117,8 +65,9 @@ breakpoints: {
       }
 ```
 
-Setting Breakpoints
-===
+
+##Setting Breakpoints
+
 Break points can be set thusly
 
 ```html
@@ -130,12 +79,13 @@ Break points can be set thusly
   x-large: Infinity}});</script>
 ```
 
-Using Implementations
-===
-Respondu also provides an implementations system,
-it currently includes the picture and srcset implementations plus the new hybrid implementation which combines the best of both. 
+## Using Implementations
 
-## picture
+Respondu also provides an implementations system, 
+it currently includes the [picture](http://dvcs.w3.org/hg/html-proposals/raw-file/tip/responsive-images/responsive-images.html) and [srcset](http://www.whatwg.org/specs/web-apps/current-work/multipage/embedded-content-1.html#attr-img-srcset) implementations as proposed on w3.org 
+
+
+### picture
 
 For picture we would do something like
 
@@ -162,7 +112,7 @@ For picture we would do something like
 </html>
 ```
 
-## srcset
+### srcset
 
 
 For srcset we could do
@@ -306,8 +256,8 @@ Respondu.plugin('picture', function (doc, done) {
 
 
 
-How It Works
-===
+## How It Works
+
 Wrapping content in `<noscript>` tags stops it from being added to the DOM, whilst also providing complete content to non-js clients (such as
 search engine bots, screen readers, text browsers). 
 On some browsers its possible to extract and process the content of the `<noscript>` tags using normal methods (e.g. getElementById etc.) 
@@ -320,11 +270,11 @@ After experimentation and thought, Respondu's chosen way is to use the `<noscrip
 we have `<--<noscript>#content#<noscript-->`. The dashes in the closing noscript tag enables us to close a dynamically inserted comment opener.
 
 Dynamically wrapping the noscript tags in a comment prevents browsers such as IE and Safari from stripping the contents out of noscript. 
-Respondu reliest on being called just before the noscript tags, so that it
+Respondu relies on being called just before the noscript tags, so that it
   1) Knows where to insert the opening `<!--` *and*
   2) Knows where in the document to insert the final processed code
 
-As a result, we can't put HTML comments inside our noscript tags (which means conditional comments are out). If we really want to have 
+As a result, **we can't put HTML comments inside our noscript tags** (which means conditional comments are out). If we really want to have 
 comments within our noscript HTML we can use `<script>/*comment here*/</script>`
 
 Once the noscript content has been extracted, Respondu loads it into a "ghost DOM". (see [createHTMLDocument](https://developer.mozilla.org/en/DOM/DOMImplementation.createHTMLDocument))
@@ -332,68 +282,71 @@ The ghost DOM doesn't load any src's. We can manipulate this ghost DOM as the `d
 
 When all changes have been made to our ghost document (e.g. when we've replaced img src's according to screen width), we load it into the real document
 
-Body Scripts
-===
-If we want to have scripts execute once the DOM has loaded, the best place for them (if possible) is usually just before the closing `</body>` tag.
-If you're using Respondu, you want them to be just before the closing `</noscript-->` tags, Respondu will then ensure they are loaded and executed
-after all the content has loaded. 
-
-```
-<body>
-<script>Respondu();</script>
-<noscript>
-content etc.
-
-<script src=myScriptWhichWillManipulateTheDocument.js></script>
-</noscript-->
-</body>
-```
-
-doclate
-===
-If you're using jQuery, and absolutely need to include scripts in the head but you're using `$(document).ready`
-to defer execution until the DOM has loaded then Respondu can accomodate you. 
-
-Just include doclate.js after jQuery, but before R.js
-
-```
-<script src=//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.js></script>
-<script src='js/doclate.js'></script>
-<script src='js/R.js'></script>
-```
-
-In production you'll probably want to merge (and minify) doclate.js and R.js to reduce the amount of
-HTTP connections on page load.
-
-Any calls to any variations of jQuery's DOM ready (`$(document).ready(fn)`, `$(document).bind('ready', fn)`  or simply `$(fn)`)
-will be buffered by doclate and then executed (in order) by R.js after all the responsive processing has completed.
-
-Whilst this makes things easier, it's not as efficient as simply including your scripts at the bottom of the body.
-
-
-Browsers Confirmed as Working (tentative, re-testing required)
-===
-
+## Browsers Confirmed as Working 
 * Chrome
 * IE 7
 * IE 8
 * IE 9
 * Firefox
-* iOS Safari
+* iOS Safari (iOS4, 5, 6)
 * Safari (win)
 * Opera
 
-Todo
-===
 
-* explain the callback functionality
+## Contributing
 
-
-Contributing
-===
 I warmly welcome all contributions, you can help by
 
 * testing
 * pull requests
 * issues
-* suggesting a name
+
+
+## Version changes
+
+###0.0.2
+* Support for IE8 + IE7
+* Intelligently triggers window.onload and $(window).load in IE7/8/9
+* Improved code base
+* Modularized code for great customisation
+  * R.base provides [basic use](#basic-use)
+  * R.srcset, R.picture, and R.hybrid can be combined with R.base to become a polyfill for the respective implementation
+  * Combine with doclate for seamless jQuery compatability
+
+###0.0.3
+* Standardisation of picture element has made hybrid solution inaccurate/reduntant so hybrid has been removed, picture will be updated in 0.0.4
+* Now includes grunt.js file to automatically build R.js
+* Customized builds available in the builds folder
+* Future version will have a builder gui for fine grain control
+
+### 0.0.4
+* Full uncustomized R.js minified and gzipped weighs at *2.8kb*
+  * This can be reduced with custom builds - e.g. just including picture and not srcset brings us down to 2.4kb
+* Picture updated to new syntax according to [proposed spec]http://dvcs.w3.org/hg/html-proposals/raw-file/tip/responsive-images/responsive-images.html)
+* API changes
+  * New plugin API for creating plugins of implementations
+  * changed `Respondu()` to simply `Respondu()`
+* New hack method: instead of `<noscript></noscript></style>` Respondu now uses `<noscript></noscript-->`
+  * The closing `</noscript-->` *must* have the two dashes for cross browser compatibility
+  * *Warning* Do not use `<!-- -->` (comment tags) inside the `<noscript>` tag*
+    * This will break the functionality some browsers (ie, safari)
+    * If you wish to make comments within the noscript tags use `<script>/*comment here*/</script>`
+* Behavioural changes
+  * Instead of putting all content in `<noscript>` tags, only relevant content (such as a picture element) goes inside a noscript tag
+  * The call to Respondu isolates the following `<noscript></noscript-->` tag, processes the code and reinserts it in the place where Respondu is called
+  * This leads to a more familiar, progressive loading experience
+  * It also means R.base has been trimmed down, there's no need for loadScripts, doclate, window.open hackarounds etc
+    * Infrastructure examples have been removed, since this functionality is no longer needful
+  * Any scripts should go outside the noscript tag, the contents of the noscript tags should only be for assets you wish to responsively select the source for
+* Stronger compatibility for source elements
+  * It turns out some browsers *cough* iOS Safari *cough* sometimes strip source tags unless they're in a video element, this is secured against
+* Picture/srcset now check for a browser implementation before processing (i.e. Respondu can now be used as a polyfill)
+* Includes matchMedia polyfill for use in plugin implementations (and could be used anywhere in a project)
+
+
+
+
+
+
+
+

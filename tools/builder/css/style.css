@@ -1,0 +1,6 @@
+#body {font-family:sans}
+#code, #dragndrop {width:33.3%; height: 5em; border: 5px dashed #888;float:right;line-height:4.8em;text-align:center;font-weight:bold;font-size:3em;color:#333}
+#ctrl {float:left;}
+
+#code {float:none;clear:both;line-height:1em;font-size:1em;font-weight:normal;border-width:2px;height:18em;text-align:left;width:99%;margin-top:2em}
+
