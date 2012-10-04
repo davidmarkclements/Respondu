@@ -8,6 +8,7 @@ A cross browser platform for implementing and creating gracefully degrading Resp
 ##Features
 
 * Simple straightforward syntax
+* Supports all modern browsers and IE7+
 * Entirely client side solution, no unneccessary HTTP requests
 * No Double Downloads - Defers loading of src's until code has been parsed
 * Write code exactly as specified by the proposed standards (e.g. use actual picture tags, instead of divs and data attributes)
@@ -15,6 +16,7 @@ A cross browser platform for implementing and creating gracefully degrading Resp
 * Easy plugin system that allows you to write custom imlpementations (e.g. roll your own responsive video code)
 * Forward looking - simple feature detection renders seamless compatible with future browsers
 * Custom builds with grunt allows you to take only what you need
+
 
 
 
