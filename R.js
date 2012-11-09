@@ -104,9 +104,7 @@ window.matchMedia = window.matchMedia || (function(doc, undefined){
 
 
   _w.Respondu = function (implementation, opts, cb) {
-    if (!(this instanceof _w.Respondu)) {return new _w.Respondu(implementation, opts, cb);}
-  
-    alert(Respondu.ltIE9);
+    if (!(this instanceof _w.Respondu)) {return new _w.Respondu(implementation, opts, cb);}    
     var self = this, 
     defaults = {
     escaper: "<!--", //specify alternative escape code
